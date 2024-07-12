@@ -55,7 +55,8 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen }) =>
 
   return (
     <>
-      <div className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+      <div
+        onDoubleClick={() => { setFavorite(true); }} className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
