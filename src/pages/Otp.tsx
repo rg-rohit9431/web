@@ -10,7 +10,7 @@ import Palmrecognition from '../assets/Palm recognition.png';
 const Otp = () => {
     const navigate = useNavigate();
     const goBackTwoSteps = () => {
-        navigate(-2);
+        navigate(-1);
     };
 
 
