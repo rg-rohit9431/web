@@ -89,7 +89,7 @@ const Shareprofile: React.FC<ShareprofileProps> = ({ isShareOpen, setShareOpen }
                             <TelegramIcon size={48} className='rounded-full' />
                             <p className='text-[#0B0B0B] font-[400] font-Monda text-[13.01px] leading-[21.19px] mt-[.5rem]'>Telegram</p>
                         </TelegramShareButton>
-                        <FacebookMessengerShareButton url={shareUrl} className='flex flex-col items-center'>
+                        <FacebookMessengerShareButton appId='' url={shareUrl} className='flex flex-col items-center'>
                             <FacebookMessengerIcon size={48} className='rounded-full' />
                             <p className='text-[#0B0B0B] font-[400] font-Monda text-[13.01px] leading-[21.19px] mt-[.5rem]'>Messenger</p>
                         </FacebookMessengerShareButton>

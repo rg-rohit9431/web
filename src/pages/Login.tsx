@@ -40,7 +40,7 @@ const Login = () => {
     <>
       {/* <video src={loginAnimation}></video> */}
       <div className="flex justify-center items-center p-4">
-        <video width="280" height="200" muted autoPlay loop>
+        <video width="240" height="180" muted autoPlay loop>
           <source src={loginAnimation} type="video/mp4" />
           {/* Your browser does not support the video tag. */}
         </video>
@@ -60,6 +60,7 @@ const Login = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              placeholder='snackBAE'
               required
             />
           </div>
@@ -95,6 +96,7 @@ const Login = () => {
               onChange={handleChange}
               required
               pattern="[0-9]{10}"
+              placeholder='Whatshap Number'
               maxLength={10}
             />
           </div>

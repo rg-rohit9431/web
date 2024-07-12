@@ -56,6 +56,7 @@ const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBi
                             name="birthday"
                             value={birthday || ''}
                             onChange={handleBirthdayChange}
+                            placeholder="Birthday"
                             disabled={isBirthdayFilled}
                         />
                     </div>
@@ -69,6 +70,7 @@ const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBi
                             id="anniversary"
                             name="anniversary"
                             value={anniversary}
+                            placeholder="Anniversary"
                             onChange={handleAnniversaryChange}
                         />
                     </div>

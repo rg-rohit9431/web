@@ -34,16 +34,16 @@ const MainPage = () => {
     const [isLogoutOpen, setLogoutOpen] = useState<boolean>(false);
     const [isShareOpen, setShareOpen] = useState<boolean>(false);
     const [isBirthdayOpen, setBirthdayOpen] = useState<boolean>(false);
-    const [isMenuOpen, setMenuOpen] = useState<boolean>(true);
+    const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
 
-    useEffect(()=>{
-        setBirthdayOpen(true);
-    },[])
     useEffect(() => {
-        
+        setBirthdayOpen(true);
+    }, [])
+    useEffect(() => {
+
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
             document.body.style.overflow = 'hidden';
-        } else if (isFeedbackOpen == false || isShareOpen == false || isBirthdayOpen == false || isMenuOpen == false) {
+        } else {
             document.body.style.overflow = 'unset';
         }
 
@@ -188,11 +188,11 @@ const MainPage = () => {
             <div onClick={() => {
                 setFeedbackOpen(true);
             }}
-                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[80vh] right-0 bg-black text-white rounded-l-[10px]'>
+                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[90vh] right-0 bg-black text-white rounded-l-[10px]'>
                 <FaPlus className='text-[1.1rem] mr-[.5rem]' /> Feedback
             </div>
 
-            
+
 
             {/* section 8  popup for menuprofile */}
 
@@ -243,7 +243,7 @@ const MainPage = () => {
                     <Birthdayprofile isBirthdayOpen={isBirthdayOpen} setBirthdayOpen={setBirthdayOpen} />
                 </div>
             }
-            
+
 
         </>
     )
