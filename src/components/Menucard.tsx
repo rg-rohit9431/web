@@ -33,7 +33,7 @@ const Menucard = () => {
     const [isFavorite, setFavorite] = useState<boolean>(false);
     return (
         <>
-            <div onClick={() => {
+            <div onDoubleClick={() => {
                 setFavorite(true)
             }} className="w-[330px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
                 <div className='w-full h-fit flex justify-between'>
