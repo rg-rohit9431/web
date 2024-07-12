@@ -47,7 +47,7 @@ const MainPage = () => {
             document.body.style.overflow = 'unset';
         }
 
-    }, [isFeedbackOpen || isShareOpen]);
+    }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
     return (
         <>
@@ -188,7 +188,7 @@ const MainPage = () => {
             <div onClick={() => {
                 setFeedbackOpen(true);
             }}
-                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[90vh] right-0 bg-black text-white rounded-l-[10px]'>
+                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[85vh] right-0 bg-black text-white rounded-l-[10px]'>
                 <FaPlus className='text-[1.1rem] mr-[.5rem]' /> Feedback
             </div>
 

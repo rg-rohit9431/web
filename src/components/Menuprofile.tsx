@@ -143,7 +143,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen }) =>
 
 
           {/* addone */}
-          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px] mb-[1rem]'>
             <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
 
             <div className='flex justify-between items-center'>
