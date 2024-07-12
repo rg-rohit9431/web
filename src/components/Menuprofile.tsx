@@ -55,7 +55,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen }) =>
 
   return (
     <>
-      <div className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50  fixed bottom-0 comment ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+      <div className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -67,74 +67,90 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen }) =>
           </div>
         </div>
 
+        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll'>
 
-        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[2rem] overflow-y-scroll'>
-          <Swiper
-            spaceBetween={30}
-            centeredSlides={true}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={false}
-            modules={[Autoplay, Pagination, Navigation]}
-            className="mySwiper"
-          >
-            {
-              item.image.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <div className='w-full h-fit flex items-center justify-center'>
-                    <img src={image.url} alt="image" className='w-[330px] h-[200px] object-cover' />
+          <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+            <Swiper
+              spaceBetween={30}
+              centeredSlides={true}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              pagination={{
+                clickable: true,
+              }}
+              navigation={false}
+              modules={[Autoplay, Pagination, Navigation]}
+              className="mySwiper"
+            >
+              {
+                item.image.map((image, index) => (
+                  <SwiperSlide key={index}>
+                    <div className='w-full h-fit flex items-center justify-center'>
+                      <img src={image.url} alt="image" className='w-[330px] h-[200px] object-cover' />
+                    </div>
+                  </SwiperSlide>
+                ))
+              }
+            </Swiper>
+
+            <div className=' w-full flex items-center justify-between px-[1rem] mt-[1rem]'>
+              <div className='flex items-center gap-[1rem]' >
+                <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2">
+                  <div
+                    className={
+                      `${item?.type === "veg" ? "bg-[#67CE67]"
+                        :
+                        item?.type === "egg" ? "bg-[#FFC107]" : "bg-[#ED4F4F]"
+                      } rounded-full w-[10px] aspect-square `}
+                  >
                   </div>
-                </SwiperSlide>
-              ))
-            }
-          </Swiper>
-
-
-          <div className=' w-full flex items-center justify-between px-[1rem] mt-[1rem]'>
-            <div className='flex items-center gap-[1rem]' >
-              <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2">
-                <div
-                  className={
-                    `${item?.type === "veg" ? "bg-[#67CE67]"
-                      :
-                      item?.type === "egg" ? "bg-[#FFC107]" : "bg-[#ED4F4F]"
-                    } rounded-full w-[10px] aspect-square `}
-                >
+                </div>
+                <div className='w-fit h-fit flex items-center px-[1rem] bg-[#FFC107] py-[.5rem] rounded-[8px] '>
+                  <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
+                  <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>Chef’s choice</p>
                 </div>
               </div>
-              <div className='w-fit h-fit flex items-center px-[1rem] bg-[#FFC107] py-[.5rem] rounded-[8px] '>
-                <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
-                <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>Chef’s choice</p>
-              </div>
+              <FaHeart
+                id="favorite"
+                className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
+                  } `}
+                onClick={() => {
+                  setFavorite(!isFavorite)
+                }}
+              />
             </div>
-            <FaHeart
-              id="favorite"
-              className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
-                } `}
-              onClick={() => {
-                setFavorite(!isFavorite)
-              }}
-            />
-          </div>
-            
+
             {/* item name */}
 
-            <div className='w-full px-[1rem] mt-[1rem]'>
-              <p className=' font-[600]  overflow-hidden text-nowrap font-inter text-[18px] leading-[30px] text-ellipsis'>{item?.name}</p>
-              <p className=' font-[600]  overflow-hidden text-nowrap font-inter text-[18px] leading-[30px] text-ellipsis'>{item?.serves}</p>
-            </div>
-
-              <div className='w-[90%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
-                <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Description</p>
-                <p className=' font-[400] font-inter text-[18px] leading-[30px] text-[#64748B]'>{item?.description}</p>
+            <div className='w-full  mt-[1rem]'>
+              <p className=' font-[600]  overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{item?.name}</p>
+              <p className=' font-[600] overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{item?.serves}</p>
+              <div className='w-full flex items-center justify-between'>
+                <p className=' font-[400] font-inter text-[1.1rem] leading-[30px]'>😍 <span className='text-[#000000A8]'>36 customer love this</span></p>
+                <p className=' font-[400] font-inter text-[1.1rem] leading-[27px] bg-[#FFD600] px-[1rem] py-[.5rem] rounded-md'>₹{item?.price}</p>
               </div>
 
+            </div>
+          </div>
 
+          {/* description */}
+          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+            <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Description</p>
+            <p className=' font-[400] font-inter text-[18px] leading-[30px] text-[#64748B]'>{item?.description}</p>
+          </div>
+
+
+          {/* addone */}
+          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+            <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
+
+            <div className='flex justify-between items-center'>
+              <p className=' font-[400] font-inter text-[18px] leading-[30px]'>{item?.name}</p>
+              <p className=' font-[400] font-inter text-[18px] leading-[30px]'>{item?.price}</p>
+            </div>
+          </div>
         </div>
       </div>
     </>

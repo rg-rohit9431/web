@@ -34,7 +34,7 @@ const MainPage = () => {
     const [isLogoutOpen, setLogoutOpen] = useState<boolean>(false);
     const [isShareOpen, setShareOpen] = useState<boolean>(false);
     const [isBirthdayOpen, setBirthdayOpen] = useState<boolean>(false);
-    const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
+    const [isMenuOpen, setMenuOpen] = useState<boolean>(true);
 
     useEffect(() => {
         setBirthdayOpen(true);
