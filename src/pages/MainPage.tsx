@@ -11,6 +11,7 @@ import Star from '../assets/Star.png';
 import Fork from '../assets/Fork and Spoon.png';
 import zomato from '../assets/zomato.png';
 import google from '../assets/google.png';
+import like from '../assets/like.png';
 
 //icons
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -155,7 +156,7 @@ const MainPage = () => {
 
             <div className='w-full h-fit px-[1rem] py-[1rem]'>
                 <div className='flex gap-[1rem] items-center'>
-                    <img src={Star} alt="Star" className='w-[32px] aspect-auto' />
+                    <img src={like} alt="like" className='w-[32px] aspect-auto' />
                     <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Your Favourite <span>(12)</span></p>
                 </div>
 
