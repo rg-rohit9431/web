@@ -40,7 +40,7 @@ const Login = () => {
     <>
       {/* <video src={loginAnimation}></video> */}
       <div className="flex justify-center items-center p-4">
-        <video width="240" height="180" muted autoPlay loop>
+        <video width="200" height="200" muted autoPlay loop>
           <source src={loginAnimation} type="video/mp4" />
           {/* Your browser does not support the video tag. */}
         </video>

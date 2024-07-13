@@ -3,6 +3,9 @@ import { useState, ChangeEvent } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 
+//image
+import Calendar from "../assets/Calendar.png";
+
 interface BirthdayprofileProps {
     isBirthdayOpen: boolean;
     setBirthdayOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -49,30 +52,38 @@ const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBi
                         <label htmlFor="date" className='text-[18px] font-inter font-[500] leading-[27px] mb-[20px] text-[#000000CC]'>
                             Add Birthday
                         </label>
-                        <input
-                            className='w-full h-[60px]  focus:outline-none border-2 border-[#12121214]  rounded-md mb-[1rem] px-[1rem]'
-                            type="date"
-                            id="birthday"
-                            name="birthday"
-                            value={birthday || ''}
-                            onChange={handleBirthdayChange}
-                            placeholder="Birthday"
-                            disabled={isBirthdayFilled}
-                        />
+                        <div className="w-full h-[60px]  focus:outline-none border-2 border-[#00000080]  rounded-md px-[1rem] flex justify-between items-center relative mb-[1rem] ">
+                            <p className='text-[18px] font-inter font-[500] leading-[27px] text-[#000000CC] '>{birthday ? `${birthday}` : "Select date"}</p>
+                            <img src={Calendar} alt="Calendar" className='w-[20px] aspect-auto' />
+                            <input
+                                className='w-full h-[60px]  focus:outline-none border-2 border-[#00000080]  rounded-md px-[1rem] absolute top-0 left-0 opacity-0'
+                                type="date"
+                                id="birthday"
+                                name="birthday"
+                                value={birthday || ''}
+                                onChange={handleBirthdayChange}
+                                placeholder="Birthday"
+                                disabled={isBirthdayFilled}
+                            />
+                        </div>
                     </div>
                     <div className="w-[90%] mx-auto">
                         <label htmlFor="anniversary" className='text-[18px] font-inter font-[500] leading-[27px] text-[#000000CC] mb-[20px]'>
                             Add Anniversary
                         </label>
-                        <input
-                            className='w-full h-[60px]  focus:outline-none border-2 border-[#12121214]  rounded-md px-[1rem] mb-[1rem]'
-                            type="date"
-                            id="anniversary"
-                            name="anniversary"
-                            value={anniversary}
-                            placeholder="Anniversary"
-                            onChange={handleAnniversaryChange}
-                        />
+                        <div className="w-full h-[60px]  focus:outline-none border-2 border-[#00000080]  rounded-md px-[1rem] flex justify-between items-center relative ">
+                            <p className='text-[18px] font-inter font-[500] leading-[27px] text-[#000000CC] '>{anniversary ? `${anniversary}` : "Select date"}</p>
+                            <img src={Calendar} alt="Calendar" className='w-[20px] aspect-auto' />
+                            <input
+                                className='w-full h-[60px]  focus:outline-none border-2 border-[#00000080]  rounded-md px-[1rem] absolute top-0 left-0 opacity-0'
+                                type="date"
+                                id="anniversary"
+                                name="anniversary"
+                                value={anniversary}
+                                placeholder="Anniversary"
+                                onChange={handleAnniversaryChange}
+                            />
+                        </div>
                     </div>
 
                 </div>

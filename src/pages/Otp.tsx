@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 //image
@@ -8,10 +8,11 @@ import Palmrecognition from '../assets/Palm recognition.png';
 
 
 const Otp = () => {
+    const id = useParams();
+    console.log(id);
+    const newId = id;
     const navigate = useNavigate();
-    const goBackTwoSteps = () => {
-        navigate(-1);
-    };
+    
 
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
@@ -50,7 +51,7 @@ const Otp = () => {
         console.log('OTP Submitted:', otp.join(''));
 
 
-        goBackTwoSteps(); // navigate to home page
+        navigate(`/restaurant/${newId}`)// navigate to home page
     };
     return (
         <>

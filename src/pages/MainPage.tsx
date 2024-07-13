@@ -39,9 +39,10 @@ const MainPage = () => {
 
     useEffect(() => {
         setBirthdayOpen(true);
-    }, [])
-    useEffect(() => {
 
+    }, [])
+
+    useEffect(() => {
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
