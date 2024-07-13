@@ -1,6 +1,10 @@
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+
+//redux
+import { useAppDispatch, useAppSelector } from '../redux/hook';
+import { fetchRestaurantDetails } from '../redux/slices/restaurentslice';
 
 //image
 import Hand from '../assets/Hand.png';
@@ -27,20 +31,78 @@ import Menucard from '../components/Menucard';
 import Menuprofile from '../components/Menuprofile';
 import Shareprofile from '../components/Shareprofile';
 import Birthdayprofile from '../components/Birthdayprofile';
+import Loader from '../components/Loader';
 
+interface MenuItem {
+    _id: string;
+    name: string;
+    image: string[];
+    description: string;
+    price: string;
+    category: string;
+    subcategory: string;
+    serves: string;
+    tag: string;
+    active: boolean;
+    subcategoryActive: boolean;
+    clicks: number;
+    addone: any[]; // You can specify a type for addone based on its actual structure
+    type: string;
+    __v: number;
+}
 
+interface Subcategory {
+    _id: string;
+    name: string;
+    image: string;
+    menuItems: MenuItem[];
+    active: boolean;
+    __v: number;
+}
+
+interface Category {
+    _id: string;
+    name: string;
+    subcategory: Subcategory[];
+    __v: number;
+}
+
+// interface Restaurant {
+//     _id: string;
+//     resName: string;
+//     email: string;
+//     businessType: string;
+//     __v: number;
+//     subscriptionDetails: any; // You can define a more specific interface for subscription details
+//     category: Category[];
+// }
 const MainPage = () => {
+    const { id } = useParams<{ id: string }>()
+    const dispatch = useAppDispatch()
+    const { data, loading, error } = useAppSelector((state) => state.restaurant)
+
+
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
     const [isLogoutOpen, setLogoutOpen] = useState<boolean>(false);
     const [isShareOpen, setShareOpen] = useState<boolean>(false);
     const [isBirthdayOpen, setBirthdayOpen] = useState<boolean>(false);
-    const [isMenuOpen, setMenuOpen] = useState<boolean>(true);
+    const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
+    const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
+
+    const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
+    const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
+    console.log(filteredData);
+
 
     useEffect(() => {
-        setBirthdayOpen(true);
+        // setBirthdayOpen(true);
+        if (id) {
+            dispatch(fetchRestaurantDetails({ id }))
+        }
+    }, []);
 
-    }, [])
+    console.log(data);
 
     useEffect(() => {
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
@@ -50,6 +112,9 @@ const MainPage = () => {
         }
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
+
+    if (loading) return <Loader />
+    if (error) return <div>Error: {error}</div>
 
     return (
         <>
@@ -116,7 +181,7 @@ const MainPage = () => {
 
 
             {/* section3 search bar and menu */}
-            <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem]'>
+            <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
                 <div
                     onClick={() => {
                         navigate('search');
@@ -124,10 +189,26 @@ const MainPage = () => {
                     <FaSearch className='text-[1.4rem] font-bold text-[#FFD600]' />
                     <p className=' font-[500] font-inter text-[16px] leading-[19.36px] text-[#787878] ml-[.5rem]'>Search for dish</p>
                 </div>
-                <div className='w-fit flex items-center gap-[10px] bg-[#000000] px-[1rem] py-[.5rem] rounded-[10px]'>
+                <div
+                    onClick={() => {
+                        setCategoryOpen(!isCategoryOpen);
+                    }} className='w-fit flex items-center gap-[10px] bg-[#000000] px-[1rem] py-[.5rem] rounded-[10px]'>
                     <img src={Fork} alt="Fork and Spoon" className='w-[32px] aspect-auto' />
                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#FFFFFF]'>Menu</p>
                 </div>
+
+                {
+                    isCategoryOpen &&
+                    <div className=' absolute top-[5rem] right-[1rem]  px-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px]'>
+                        {
+                            filteredData?.subcategory?.map((item: Category) => (
+                                <p key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem]'>
+                                    {item?.name}
+                                </p>
+                            ))
+                        }
+                    </div>
+                }
             </div>
 
 
@@ -169,7 +250,15 @@ const MainPage = () => {
                 </div>
             </div>
 
-            {/* section 6  Noodles */}
+            {/* section 6  MenuItems */}
+
+            {/* <div>
+                {
+                    filteredData?.category.map((item: Category) => (
+                         
+                            ))
+                }
+            </div> */}
 
             <div className='w-full h-fit px-[1rem] py-[1rem]'>
                 <div className='flex gap-[1rem] items-center'>
