@@ -90,7 +90,7 @@ const MainPage = () => {
     const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
     const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
 
-    const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
     const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
     console.log(filteredData);
 
@@ -100,6 +100,7 @@ const MainPage = () => {
         if (id) {
             dispatch(fetchRestaurantDetails({ id }))
         }
+        setSelectedCategory("food menu");
     }, []);
 
     console.log(data);
