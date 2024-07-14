@@ -94,7 +94,7 @@ const MainPage = () => {
     const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
     const [showCategory, setShowCategory] = useState<boolean>(false);
     const [modalData, setModalData] = useState<MenuItem | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
     const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
     console.log(filteredData);
 
@@ -104,7 +104,6 @@ const MainPage = () => {
         if (id) {
             dispatch(fetchRestaurantDetails({ id }))
         }
-        setSelectedCategory("food menu");
     }, []);
 
     console.log(data);
@@ -219,22 +218,25 @@ const MainPage = () => {
 
 
                 {/* section4 */}
-                <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem]'>
+                <div className='w-full h-fit flex gap-[1rem] items-center px-[1rem] py-[1rem]'>
+                    {/* drop down for category */}
                     <div
                         onClick={
                             () => {
                                 setShowCategory(!showCategory);
                             }
-                        } className='px-[1rem] py-[.7rem]  border-[2px] border-[#101828] flex gap-[1rem] items-center rounded-[8px] relative'>
+                        } className='px-[.5rem] py-[.7rem]  border-[2px] border-[#101828] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
                         <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828]'>{selectedCategory}</p>
-                        <IoChevronDown />
+                        <IoChevronDown className='text-[16px]'/>
                         <div>
                             {
                                 showCategory &&
-                                <div className='absolute top-[5rem] right-[1rem]  px-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem]'>
+                                <div className='absolute top-[3rem] right-[1rem]  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem] z-[100] border-2 border-[#101828]'>
                                     {
                                         data?.category?.map((item: Category) => (
-                                            <p key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem]'>
+                                            <p onClick={()=>{
+                                                setSelectedCategory(item.name);
+                                            }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem] text-nowrap'>
                                                 {item?.name}
                                             </p>
                                         ))
@@ -242,6 +244,12 @@ const MainPage = () => {
                                 </div>
                             }
                         </div>
+                    </div>
+                    <div>
+                            <div className=' border-2 rounded-[8px] px-[.7rem] py-[.2rem]'> 
+                                <div></div>
+                                <p>veg</p>
+                            </div>
                     </div>
 
                 </div>
