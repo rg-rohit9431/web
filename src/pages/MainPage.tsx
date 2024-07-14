@@ -48,6 +48,7 @@ interface MenuItem {
     tag: string;
     active: boolean;
     categoryActive: boolean;
+    subcategoryActive: boolean;
     clicks: number;
     addone: any[]; // You can specify a type for addone based on its actual structure
     type: string;
@@ -162,7 +163,7 @@ const MainPage = () => {
 
 
     useEffect(() => {
-        // setBirthdayOpen(true);
+        setBirthdayOpen(true);
         if (id) {
             dispatch(fetchRestaurantDetails({ id }))
         }
@@ -272,7 +273,9 @@ const MainPage = () => {
                                             scrollToElement(item?.name);
                                             setCategoryOpen(!isCategoryOpen);
                                         }} key={item?._id} className=' font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] pt-[1.2rem]'>
-                                            {item?.name} ({item?.menuItems.length})
+                                            {item?.name} ({item?.menuItems.filter(
+                                                (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
+                                            ).length})
                                         </p>
                                     ))
                                 }
@@ -356,14 +359,16 @@ const MainPage = () => {
                             <div id={item.name} className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
                                 <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
                                     <img src={item.image} alt={item.name} className='w-[32px] aspect-auto' />
-                                    <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.length})</span></p>
+                                    <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.filter(
+                                                (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
+                                            ).length})</span></p>
                                 </div>
 
                                 <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
                                     <div>
                                         {(() => {
                                             const filteredMenuItems = filterMenuItems(item.menuItems).filter(
-                                                (menu: MenuItem) => menu.active && menu.categoryActive
+                                                (menu: MenuItem) => menu.active === true && menu.subcategoryActive === true
                                             );
                                             console.log(filteredMenuItems);
 

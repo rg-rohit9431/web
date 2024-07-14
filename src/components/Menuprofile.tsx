@@ -38,6 +38,7 @@ interface MenuItem {
   tag: string | null;
   active: boolean;
   categoryActive: boolean;
+  subcategoryActive: boolean;
   clicks: number;
   addone: any[]; // You can specify a type for addone based on its actual structure
   type: string;
@@ -52,7 +53,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
   return (
     <>
       <div
-        onDoubleClick={() => { setFavorite(true); }} className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll   ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        onDoubleClick={() => { setFavorite(true); }} className={`w-full h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll   ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -64,8 +65,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
           </div>
         </div>
 
-        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll'>
-
+        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll rounded-t-[6px]'>
           <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px]'>
             <Swiper
               spaceBetween={30}

@@ -51,7 +51,7 @@ const Shareprofile: React.FC<ShareprofileProps> = ({ isShareOpen, setShareOpen }
 
     return (
         <>
-            <div className={`w-full h-[100vh] flex flex-col justify-end bg-black bg-opacity-50  fixed bottom-0 comment ${isShareOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+            <div className={`w-full h-[100vh] z-[1002] flex flex-col  justify-end bg-black bg-opacity-50  fixed bottom-0 comment ${isShareOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
                 <div className="w-full h-fit flex items-center justify-center ">
                     <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -63,8 +63,8 @@ const Shareprofile: React.FC<ShareprofileProps> = ({ isShareOpen, setShareOpen }
                     </div>
                 </div>
 
-                <div className='w-full h-fit bg-white py-[2rem]'>
-                    <div className="w-full h-fit px-[1rem] ">
+                <div className='w-full h-fit bg-white py-[2rem] rounded-t-[6px] '>
+                    <div className="w-full h-fit px-[1rem]  border-tl-[8px]">
                         <p className=' font-[400] font-inter text-[24px] leading-[29.05px] text-[#120D26] '>Share with friends</p>
                         <p className="w-[100%]  my-[1rem] border-[1px] border-[#00000054]"></p>
                     </div>
