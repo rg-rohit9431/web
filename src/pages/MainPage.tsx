@@ -225,13 +225,13 @@ const MainPage = () => {
                             () => {
                                 setShowCategory(!showCategory);
                             }
-                        } className='px-[.5rem] py-[.7rem]  border-[2px] border-[#101828] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
+                        } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
                         <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828]'>{selectedCategory}</p>
                         <IoChevronDown className='text-[16px]'/>
                         <div>
                             {
                                 showCategory &&
-                                <div className='absolute top-[3rem] right-[1rem]  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem] z-[100] border-2 border-[#101828]'>
+                                <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem] z-[100] border-[1px] border-[#00000099]'>
                                     {
                                         data?.category?.map((item: Category) => (
                                             <p onClick={()=>{
