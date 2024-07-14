@@ -1,25 +1,3 @@
-const item = {
-    "name": "Vegetarian Pizza",
-    "image": [
-        {
-            "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoep7rIvqP4e8R1TPIP3rUu2KXee6Sp_9enQ&s"
-        },
-        {
-            "url": "https://i0.wp.com/www.thursdaynightpizza.com/wp-content/uploads/2022/06/veggie-pizza-overhead-sliced.png?resize=720%2C900&ssl=1"
-        }
-    ],
-    "description": "A delightful pizza topped with fresh vegetables and cheese.",
-    "price": "10.99",
-    "category": "668f88097556ccd1b81d5e48",
-    "subcategory": "668fc3d0dc73d3a79a45dde5",
-    "serves": "2-3",
-    "tag": "Vegetarian",
-    "type": "egg",
-    "addone": [
-        "668fb1414fdc8ce88605d3e4",
-        "668fb1654fdc8ce88605d3e6"
-    ]
-}
 
 
 import { useState } from 'react';
@@ -29,13 +7,31 @@ import blackstar from '../assets/blackstar.png';
 //icons
 import { FaHeart } from "react-icons/fa6";
 
-const Menucard = () => {
+interface MenuItem {
+    _id: string;
+    name: string;
+    image: string[];
+    description: string;
+    price: string;
+    category: string;
+    subcategory: string;
+    serves: string;
+    tag: string;
+    active: boolean;
+    categoryActive: boolean;
+    clicks: number;
+    addone: any[]; // You can specify a type for addone based on its actual structure
+    type: string;
+    __v: number;
+}
+
+const Menucard = ({ item }: { item: MenuItem }) => {
     const [isFavorite, setFavorite] = useState<boolean>(false);
     return (
         <>
             <div onDoubleClick={() => {
                 setFavorite(true)
-            }} className="w-[330px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
+            }} className="w-[330px] min-w-[330px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
                 <div className='w-full h-fit flex justify-between'>
                     <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2 relative top-[1rem] left-[1rem]">
                         <div
@@ -61,7 +57,7 @@ const Menucard = () => {
                         <p className=' font-[600] font-inter text-[17px] leading-[30px] text-ellipsis text-[#0F172A]'>₹ {item?.price}</p>
                         <p className=' font-[400] h-[50px] overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>{item?.description}</p>
                     </div>
-                    <img src={item?.image[0].url} alt="image" className='w-[30%] aspect-auto object-contain' />
+                    <img src={item?.image[0]} alt="image" className='w-[30%] aspect-auto object-contain' />
                 </div>
 
                 <p className='border-[1.3px] border-[#00000033] w-[90%] mx-auto mt-[.5rem]'></p>

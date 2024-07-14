@@ -9,6 +9,9 @@
 .hideScroller::-webkit-scrollbar {
     display: none;
   }
+  .scroller {
+    display: inline-flex; /* Make sure children are laid out in a row */
+}
 
   .swiper {
     width: 100%;

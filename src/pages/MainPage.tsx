@@ -11,11 +11,11 @@ import Hand from '../assets/Hand.png';
 import foodoos from '../assets/foodoos.png';
 import Facebook from '../assets/Facebook.png';
 import instagram from '../assets/instagram.png';
-import Star from '../assets/Star.png';
+// import Star from '../assets/Star.png';
 import Fork from '../assets/Fork and Spoon.png';
 import zomato from '../assets/zomato.png';
 import google from '../assets/google.png';
-import like from '../assets/like.png';
+// import like from '../assets/like.png';
 
 //icons
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -44,7 +44,7 @@ interface MenuItem {
     serves: string;
     tag: string;
     active: boolean;
-    subcategoryActive: boolean;
+    categoryActive: boolean;
     clicks: number;
     addone: any[]; // You can specify a type for addone based on its actual structure
     type: string;
@@ -218,71 +218,61 @@ const MainPage = () => {
 
             </div>
 
-            {/* section 5  most recommand */}
 
-            <div className='w-full h-fit px-[1rem] py-[1rem]'>
-                <div className='flex gap-[1rem] items-center'>
-                    <img src={Star} alt="Star" className='w-[32px] aspect-auto' />
-                    <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Most Recommended <span>(12)</span></p>
-                </div>
-
-                {/* all menu items which are most recommended by users will be shown here */}
-                <div className='w-full h-fit overflow-x-hidden mt-[1rem] '>
-                    <div className='w-full h-fit'>
-                        <Menucard />
-                    </div>
-
-                </div>
-            </div>
-
-            {/* section 6  favorite */}
-
-            <div className='w-full h-fit px-[1rem] py-[1rem]'>
-                <div className='flex gap-[1rem] items-center'>
-                    <img src={like} alt="like" className='w-[32px] aspect-auto' />
-                    <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Your Favourite <span>(12)</span></p>
-                </div>
-
-                {/* all menu items which are most recommended by users will be shown here */}
-                <div className='w-full h-fit overflow-x-hidden mt-[1rem] '>
-                    <div className='w-full h-fit'>
-                        <Menucard />
-                    </div>
-                </div>
-            </div>
 
             {/* section 6  MenuItems */}
 
-            {/* <div>
+            <div>
                 {
-                    filteredData?.category.map((item: Category) => (
-                         
-                            ))
+                    filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
+                        //  {item?.name}
+                        <div className='w-full h-fit px-[1rem] py-[1rem]' key={item?._id}>
+                            <div className='flex gap-[1rem] items-center'>
+                                <img src={item?.image} alt="like" className='w-[32px] aspect-auto' />
+                                <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item?.name} <span>({item.menuItems.length})</span></p>
+                            </div>
+
+                            <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
+                                <div >
+
+                                    {
+                                        item?.menuItems?.filter((menu: MenuItem) => menu.active === true && menu.categoryActive === true).length === 0 ? (
+                                            <div>
+                                                <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>No items available</p>
+                                            </div>
+                                        )
+                                            :
+                                            (
+                                                <div className={`w-[${item?.menuItems.filter((menu: MenuItem) => menu.active == true && menu.categoryActive == true).length * 330
+                                                    }px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}
+                                                    >
+                                                    {
+                                                        item?.menuItems.filter((menu: MenuItem) => menu.active == true && menu.categoryActive == true).map((item: MenuItem) => (
+                                                            <Menucard item={item} key={item?._id} />
+                                                        ))
+
+                                                    }
+                                                </div>
+                                            )
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    ))
                 }
-            </div> */}
+            </div >
 
-            <div className='w-full h-fit px-[1rem] py-[1rem]'>
-                <div className='flex gap-[1rem] items-center'>
-                    <img src={Star} alt="Star" className='w-[32px] aspect-auto' />
-                    <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Noodles <span>(12)</span></p>
-                </div>
 
-                {/* all menu items which are most recommended by users will be shown here */}
-                <div className='w-full h-fit overflow-x-hidden mt-[1rem] '>
-                    <div className='w-full h-fit'>
-                        <Menucard />
-                    </div>
-                </div>
-            </div>
 
             {/* section 7  feedback */}
 
             <div onClick={() => {
                 setFeedbackOpen(true);
             }}
-                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[85vh] right-0 bg-black text-white rounded-l-[10px]'>
+                className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[85vh] right-0 bg-black text-white rounded-l-[10px]' >
                 <FaPlus className='text-[1.1rem] mr-[.5rem]' /> Feedback
-            </div>
+            </div >
 
 
 
