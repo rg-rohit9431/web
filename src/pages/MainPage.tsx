@@ -140,7 +140,22 @@ const MainPage = () => {
             return typeMatch && tagMatch;
         });
     };
+    const scrollToElement = (id: string) => {
+        const element = document.getElementById(id);
+        const headerOffset = 180; // Adjust this value to match the height of your fixed header
 
+        if (element) {
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth',
+            });
+        } else {
+            console.warn(`Element with ID "${id}" not found.`);
+        }
+    };
 
     const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
     console.log(filteredData);
@@ -229,108 +244,117 @@ const MainPage = () => {
                     </div>
                 </div>
 
-
-                {/* section3 search bar and menu */}
-                <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
-                    <div
-                        onClick={() => {
-                            navigate('search');
-                        }} className=' w-[60%] border-2 border-[#12121214] h-[50px] flex items-center px-[1rem] py-[1rem] rounded-[10px] bg-[#FFFFFF] '>
-                        <FaSearch className='text-[1.4rem] font-bold text-[#FFD600]' />
-                        <p className=' font-[500] font-inter text-[16px] leading-[19.36px] text-[#787878] ml-[.5rem]'>Search for dish</p>
-                    </div>
-                    <div
-                        onClick={() => {
-                            setCategoryOpen(!isCategoryOpen);
-                        }} className='w-fit flex items-center gap-[10px] bg-[#000000] px-[1rem] py-[.5rem] rounded-[10px]'>
-                        <img src={Fork} alt="Fork and Spoon" className='w-[32px] aspect-auto' />
-                        <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#FFFFFF]'>Menu</p>
-                    </div>
-
-                    {
-                        isCategoryOpen &&
-                        <div className=' absolute top-[5rem] right-[1rem]  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[.5px] border-[#12121214]'>
-                            {
-                                filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
-                                    <p key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem]'>
-                                        {item?.name} ({item?.menuItems.length})
-                                    </p>
-                                ))
-                            }
+                {/* sticky elements */}
+                <div className='w-full h-fit sticky top-0 bg-white border-b-[1px] z-[100]'>
+                    {/* section3 search bar and menu */}
+                    <div className='w-full h-fit flex justify-between items-center px-[1rem] pt-[1rem] relative'>
+                        <div
+                            onClick={() => {
+                                navigate('search');
+                            }} className=' w-[60%] border-2 border-[#12121214] h-[50px] flex items-center px-[1rem] py-[1rem] rounded-[10px] bg-[#FFFFFF] '>
+                            <FaSearch className='text-[1.4rem] font-bold text-[#FFD600]' />
+                            <p className=' font-[500] font-inter text-[16px] leading-[19.36px] text-[#787878] ml-[.5rem]'>Search for dish</p>
                         </div>
-                    }
-                </div>
+                        <div
+                            onClick={() => {
+                                setCategoryOpen(!isCategoryOpen);
+                            }} className='w-fit flex items-center gap-[10px] bg-[#000000] px-[1rem] py-[.5rem] rounded-[10px]'>
+                            <img src={Fork} alt="Fork and Spoon" className='w-[32px] aspect-auto' />
+                            <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#FFFFFF]'>Menu</p>
+                        </div>
 
+                        {
+                            isCategoryOpen &&
+                            <div className=' absolute top-[5rem] right-[1rem]  py-[1rem] px-[1.5rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[1px] shadow-md border-[#12121214]'>
+                                {
+                                    filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
+                                        <p onClick={() => {
+                                            scrollToElement(item?.name);
+                                            setCategoryOpen(!isCategoryOpen);
+                                        }} key={item?._id} className=' font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] pt-[1.2rem]'>
+                                            {item?.name} ({item?.menuItems.length})
+                                        </p>
+                                    ))
+                                }
+                            </div>
+                        }
+                    </div>
 
-
-                {/* section4 */}
-                <div className='w-full h-fit flex gap-[1rem] items-center px-[1rem] py-[1rem]'>
-                    {/* drop down for category */}
-                    <div
-                        onClick={
-                            () => {
-                                setShowCategory(!showCategory);
-                            }
-                        } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
-                        <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828] text-nowrap'>{selectedCategory}</p>
-                        <IoChevronDown className='text-[16px]' />
-                        <div>
-                            {
-                                showCategory &&
-                                <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller  py-[.5rem] z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
-                                    {
-                                        data?.category?.map((item: Category) => (
-                                            <p onClick={() => {
-                                                setSelectedCategory(item.name);
-                                            }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem] text-nowrap'>
-                                                {item?.name}
-                                            </p>
-                                        ))
-                                    }
+                    {/* section4 */}
+                    <div className='w-full h-fit flex gap-[1rem] items-center px-[1rem] py-[1rem]'>
+                        {/* drop down for category */}
+                        <div
+                            onClick={
+                                () => {
+                                    setShowCategory(!showCategory);
+                                }
+                            } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
+                            <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828] text-nowrap'>{selectedCategory}</p>
+                            <IoChevronDown className='text-[16px]' />
+                            <div>
+                                {
+                                    showCategory &&
+                                    <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller  py-[.5rem] z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
+                                        {
+                                            data?.category?.map((item: Category) => (
+                                                <p onClick={() => {
+                                                    setSelectedCategory(item.name);
+                                                }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem] text-nowrap'>
+                                                    {item?.name}
+                                                </p>
+                                            ))
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        {/* filter */}
+                        <div className='w-full overflow-hidden'>
+                            <div className='w-full flex items-center gap-[.5rem] overflow-scroll hideScroller'>
+                                {/* veg */}
+                                <div onClick={() => handleFilterToggle('veg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.veg === true ? 'border-[#2CAF29]' : 'border-[#12121214]'}`}>
+                                    <div className='w-[10px] h-[10px] rounded-full bg-[#2CAF29]'></div>
+                                    <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>veg</p>
+                                    <RxCross2 className={`text-[19px] font-[700]  ${filters.veg === true ? 'text-[#2CAF29] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
-                            }
-                        </div>
-                    </div>
-                    {/* filter */}
-                    <div className='w-full overflow-hidden'>
-                        <div className='w-full flex items-center gap-[1rem] overflow-scroll hideScroller'>
-                            {/* veg */}
-                            <div onClick={() => handleFilterToggle('veg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.veg === true ? 'border-[#2CAF29]' : 'border-[#12121214]'}`}>
-                                <div className='w-[10px] h-[10px] rounded-full bg-[#2CAF29]'></div>
-                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>veg</p>
-                            </div>
-                            {/* nonVeg */}
-                            <div onClick={() => handleFilterToggle('nonVeg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.nonVeg === true ? 'border-[#F44336]' : 'border-[#12121214]'}`}>
-                                <div className='w-[10px] h-[10px] rounded-full bg-[#F44336]'></div>
-                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Non-veg</p>
-                            </div>
+                                {/* nonVeg */}
+                                <div onClick={() => handleFilterToggle('nonVeg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.nonVeg === true ? 'border-[#F44336]' : 'border-[#12121214]'}`}>
+                                    <div className='w-[10px] h-[10px] rounded-full bg-[#F44336]'></div>
+                                    <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Non-veg</p>
+                                    <RxCross2 className={`text-[19px] font-[700]  ${filters.nonVeg === true ? 'text-[#F44336] ' : 'text-[#12121214] hidden'} `} />
+                                </div>
 
-                            {/* Egg */}
-                            <div onClick={() => handleFilterToggle('egg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.egg === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
-                                <div className='w-[10px] h-[10px] rounded-full bg-[#FFC107]'></div>
-                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Egg</p>
-                            </div>
+                                {/* Egg */}
+                                <div onClick={() => handleFilterToggle('egg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.egg === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                    <div className='w-[10px] h-[10px] rounded-full bg-[#FFC107]'></div>
+                                    <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Egg</p>
+                                    <RxCross2 className={`text-[19px] font-[700]  ${filters.egg === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
+                                </div>
 
-                            {/* bestSeller */}
-                            <div onClick={() => handleFilterToggle('bestSeller')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
-                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Best Seller</p>
-                            </div>
+                                {/* bestSeller */}
+                                <div onClick={() => handleFilterToggle('bestSeller')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                    <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Best Seller</p>
+                                    <RxCross2 className={`text-[19px] font-[700]  ${filters.bestSeller === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
+                                </div>
 
-                            {/* chefsChoice */}
-                            <div onClick={() => handleFilterToggle('chefsChoice')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
-                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Chef's Choice</p>
+                                {/* chefsChoice */}
+                                <div onClick={() => handleFilterToggle('chefsChoice')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                    <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Chef's Choice</p>
+                                    <RxCross2 className={`text-[19px] font-[700]  ${filters.chefsChoice === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
+
 
                 {/* section 6  MenuItems */}
                 <div className='w-full h-fit'>
                     {
                         filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active).map((item: Subcategory) => (
-                            <div className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
-                                <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center bg-[#c7dfe543] '>
+                            <div id={item.name} className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
+                                <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
                                     <img src={item.image} alt={item.name} className='w-[32px] aspect-auto' />
                                     <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.length})</span></p>
                                 </div>
