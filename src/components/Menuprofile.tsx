@@ -35,7 +35,7 @@ interface MenuItem {
   category: string;
   subcategory: string;
   serves: string;
-  tag: string;
+  tag: string | null;
   active: boolean;
   categoryActive: boolean;
   clicks: number;
@@ -84,8 +84,8 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
               {
                 modalData?.image.map((image, index) => (
                   <SwiperSlide key={index}>
-                    <div className='w-full h-fit flex items-center justify-center'>
-                      <img src={image} alt="image" className='w-[330px] h-[200px] object-cover' />
+                    <div className='w-full h-full flex items-center justify-center'>
+                      <img src={image} alt="image" className='w-full h-full rounded-[10px] object-center' />
                     </div>
                   </SwiperSlide>
                 ))
@@ -104,10 +104,13 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                   >
                   </div>
                 </div>
-                <div className='w-fit h-fit flex items-center px-[1rem] bg-[#FFC107] py-[.5rem] rounded-[8px] '>
-                  <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
-                  <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>Chef’s choice</p>
-                </div>
+                {
+                  modalData?.tag &&
+                  <div className='w-fit h-fit flex items-center px-[1.2rem] bg-[#FFC107] py-[.5rem] rounded-[8px]'>
+                    <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
+                    <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>{modalData?.tag}</p>
+                  </div>
+                }
               </div>
               <FaHeart
                 id="favorite"

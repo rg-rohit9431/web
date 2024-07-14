@@ -79,6 +79,16 @@ interface Category {
 //     subscriptionDetails: any; // You can define a more specific interface for subscription details
 //     category: Category[];
 // }
+
+interface Filters {
+    veg: boolean;
+    nonVeg: boolean;
+    egg: boolean;
+    bestSeller: boolean;
+    chefsChoice: boolean;
+}
+
+
 const MainPage = () => {
     const { id } = useParams<{ id: string }>()
     const dispatch = useAppDispatch()
@@ -95,6 +105,43 @@ const MainPage = () => {
     const [showCategory, setShowCategory] = useState<boolean>(false);
     const [modalData, setModalData] = useState<MenuItem | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
+
+    const [filters, setFilters] = useState<Filters>({
+        veg: false,
+        nonVeg: false,
+        egg: false,
+        bestSeller: false,
+        chefsChoice: false
+    });
+    const handleFilterToggle = (filter: keyof Filters) => {
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [filter]: !prevFilters[filter]
+        }));
+    };
+
+    const filterMenuItems = (menuItems: MenuItem[]) => {
+        return menuItems.filter((menu) => {
+            const vegMatch = filters.veg && menu.type === 'veg';
+            const nonVegMatch = filters.nonVeg && menu.type === 'nonveg';
+            const eggMatch = filters.egg && menu.type === 'egg';
+
+            const chefChoiceMatch = filters.chefsChoice && menu.tag === 'chefchoice';
+            const bestSellerMatch = filters.bestSeller && menu.tag === 'bestseller';
+
+            const typeMatch = filters.veg || filters.nonVeg || filters.egg
+                ? vegMatch || nonVegMatch || eggMatch
+                : true;
+
+            const tagMatch = filters.chefsChoice || filters.bestSeller
+                ? chefChoiceMatch || bestSellerMatch
+                : true;
+
+            return typeMatch && tagMatch;
+        });
+    };
+
+
     const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
     console.log(filteredData);
 
@@ -143,7 +190,6 @@ const MainPage = () => {
 
                         {
                             isLogoutOpen &&
-
                             <div className='w-fit absolute top-[5rem] right-[16px] bg-white rounded-[10px] flex flex-col items-start justify-center  shadow-lg'>
                                 <div
                                     onClick={
@@ -203,11 +249,11 @@ const MainPage = () => {
 
                     {
                         isCategoryOpen &&
-                        <div className=' absolute top-[5rem] right-[1rem]  px-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem]'>
+                        <div className=' absolute top-[5rem] right-[1rem]  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[.5px] border-[#12121214]'>
                             {
-                                filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Category) => (
+                                filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
                                     <p key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem]'>
-                                        {item?.name}
+                                        {item?.name} ({item?.menuItems.length})
                                     </p>
                                 ))
                             }
@@ -226,15 +272,15 @@ const MainPage = () => {
                                 setShowCategory(!showCategory);
                             }
                         } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
-                        <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828]'>{selectedCategory}</p>
-                        <IoChevronDown className='text-[16px]'/>
+                        <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828] text-nowrap'>{selectedCategory}</p>
+                        <IoChevronDown className='text-[16px]' />
                         <div>
                             {
                                 showCategory &&
-                                <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller py-[.5rem] z-[100] border-[1px] border-[#00000099]'>
+                                <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller  py-[.5rem] z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
                                     {
                                         data?.category?.map((item: Category) => (
-                                            <p onClick={()=>{
+                                            <p onClick={() => {
                                                 setSelectedCategory(item.name);
                                             }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem] text-nowrap'>
                                                 {item?.name}
@@ -245,66 +291,83 @@ const MainPage = () => {
                             }
                         </div>
                     </div>
-                    <div>
-                            <div className=' border-2 rounded-[8px] px-[.7rem] py-[.2rem]'> 
-                                <div></div>
-                                <p>veg</p>
+                    {/* filter */}
+                    <div className='w-full overflow-hidden'>
+                        <div className='w-full flex items-center gap-[1rem] overflow-scroll hideScroller'>
+                            {/* veg */}
+                            <div onClick={() => handleFilterToggle('veg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.veg === true ? 'border-[#2CAF29]' : 'border-[#12121214]'}`}>
+                                <div className='w-[10px] h-[10px] rounded-full bg-[#2CAF29]'></div>
+                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>veg</p>
                             </div>
+                            {/* nonVeg */}
+                            <div onClick={() => handleFilterToggle('nonVeg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.nonVeg === true ? 'border-[#F44336]' : 'border-[#12121214]'}`}>
+                                <div className='w-[10px] h-[10px] rounded-full bg-[#F44336]'></div>
+                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Non-veg</p>
+                            </div>
+
+                            {/* Egg */}
+                            <div onClick={() => handleFilterToggle('egg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.egg === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <div className='w-[10px] h-[10px] rounded-full bg-[#FFC107]'></div>
+                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Egg</p>
+                            </div>
+
+                            {/* bestSeller */}
+                            <div onClick={() => handleFilterToggle('bestSeller')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Best Seller</p>
+                            </div>
+
+                            {/* chefsChoice */}
+                            <div onClick={() => handleFilterToggle('chefsChoice')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Chef's Choice</p>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
 
                 {/* section 6  MenuItems */}
-
                 <div className='w-full h-fit'>
                     {
-                        filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
-                            //  {item?.name}
-                            <div className='w-full h-fit px-[1rem] py-[1rem]' key={item?._id}>
-                                <div className='flex gap-[1rem] items-center'>
-                                    <img src={item?.image} alt={item?.name} className='w-[32px] aspect-auto' />
-                                    <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item?.name} <span>({item.menuItems.length})</span></p>
+                        filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active).map((item: Subcategory) => (
+                            <div className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
+                                <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center bg-[#c7dfe543] '>
+                                    <img src={item.image} alt={item.name} className='w-[32px] aspect-auto' />
+                                    <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.length})</span></p>
                                 </div>
 
                                 <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
-                                    <div >
-                                        {
-                                            item?.menuItems?.filter((menu: MenuItem) => menu.active === true && menu.categoryActive === true).length === 0 ? (
+                                    <div>
+                                        {(() => {
+                                            const filteredMenuItems = filterMenuItems(item.menuItems).filter(
+                                                (menu: MenuItem) => menu.active && menu.categoryActive
+                                            );
+                                            console.log(filteredMenuItems);
+
+                                            return filteredMenuItems.length === 0 ? (
                                                 <div className='w-full h-fit flex flex-col justify-center items-center gap-[1rem]'>
                                                     <img src={nocomments} alt="nocomments" className='w-[100px] aspect-auto' />
-                                                    <p className=' font-[500] font-Sen text-[14px] leading-[20px] text-[#101828]'>No items available</p>
+                                                    <p className='font-[500] font-Sen text-[14px] leading-[20px] text-[#101828]'>No items available</p>
                                                 </div>
-                                            )
-                                                :
-                                                (
-                                                    <div className={`w-[${item?.menuItems.filter((menu: MenuItem) => menu.active == true && menu.categoryActive == true).length * 330
-                                                        }px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}
-                                                    >
-                                                        {
-                                                            item?.menuItems.filter((menu: MenuItem) => menu.active == true && menu.categoryActive == true).map((item: MenuItem) => (
-                                                                <div key={item?._id} onClick={
-                                                                    () => {
-                                                                        setMenuOpen(true);
-                                                                        setModalData(item);
-                                                                    }
-                                                                }>
-                                                                    <Menucard
-                                                                        item={item} />
-
-                                                                </div>
-                                                            ))
-
-                                                        }
-                                                    </div>
-                                                )
-                                        }
-
+                                            ) : (
+                                                <div className={`w-[${filteredMenuItems.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                                                    {filteredMenuItems.map((menuItem: MenuItem) => (
+                                                        <div key={menuItem._id} onClick={() => {
+                                                            setMenuOpen(true);
+                                                            setModalData(menuItem);
+                                                        }}>
+                                                            <Menucard item={menuItem} />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
+
                             </div>
                         ))
                     }
-                </div >
+                </div>
 
                 {/* section 7  feedback */}
 

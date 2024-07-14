@@ -16,7 +16,7 @@ interface MenuItem {
     category: string;
     subcategory: string;
     serves: string;
-    tag: string;
+    tag: string | null;
     active: boolean;
     categoryActive: boolean;
     clicks: number;
@@ -44,10 +44,13 @@ const Menucard = ({ item }: { item: MenuItem }) => {
                         </div>
                     </div>
 
-                    <div className='w-fit h-fit flex items-center px-[1rem] bg-[#FFC107] py-[.5rem] rounded-bl-[8px] rounded-tr-[8px]'>
-                        <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
-                        <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>Chef’s choice</p>
-                    </div>
+                    {
+                        item.tag &&
+                        <div className='w-fit h-fit flex items-center px-[1rem] bg-[#FFC107] py-[.5rem] rounded-bl-[8px] rounded-tr-[8px]'>
+                            <img src={blackstar} alt="blackstar" className='w-[20px] aspect-auto' />
+                            <p className=' font-[500] font-inter text-[15px] leading-[20px] text-[#101828] ml-[.5rem]'>{item?.tag}</p>
+                        </div>
+                    }
                 </div>
 
 
