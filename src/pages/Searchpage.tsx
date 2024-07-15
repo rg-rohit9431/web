@@ -93,7 +93,7 @@ const Searchpage: React.FC<SearchBarProps> = () => {
         }
     }, [id, isMenuOpen]);
 
-    if (loading) return <Loader />
+    //if (loading) return <Loader />
     if (error) return <div>Error: {error}</div>
     else
         return (
