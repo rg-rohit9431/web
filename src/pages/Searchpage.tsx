@@ -52,7 +52,7 @@ const Searchpage: React.FC<SearchBarProps> = () => {
 
     //redux call
     const dispatch = useAppDispatch();
-    const { data, loading, error } = useAppSelector((state) => state.allMenuDetails);
+    const { data, error } = useAppSelector((state) => state.allMenuDetails);
     const searchmenu = useAppSelector((state) => state.searchMenu);
 
     // normal const variable
