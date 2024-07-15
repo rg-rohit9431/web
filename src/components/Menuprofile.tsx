@@ -26,7 +26,9 @@ interface menuprofileProps {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   modalData: MenuItem | null;
 }
-interface MenuItem {
+interface MenuItem  {
+  likes: number;
+  likedBy: string[];
   _id: string;
   name: string;
   image: string[];
@@ -35,16 +37,14 @@ interface MenuItem {
   category: string;
   subcategory: string;
   serves: string;
-  tag: string | null;
+  tag: string;
   active: boolean;
-  categoryActive: boolean;
   subcategoryActive: boolean;
   clicks: number;
-  addone: any[]; // You can specify a type for addone based on its actual structure
+  addone: string[];
   type: string;
   __v: number;
-}
-
+};
 
 const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, modalData }) => {
   const [isFavorite, setFavorite] = useState<boolean>(false);

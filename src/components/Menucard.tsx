@@ -7,7 +7,9 @@ import blackstar from '../assets/blackstar.png';
 //icons
 import { FaHeart } from "react-icons/fa6";
 
-interface MenuItem {
+interface MenuItem  {
+    likes: number;
+    likedBy: string[];
     _id: string;
     name: string;
     image: string[];
@@ -16,14 +18,14 @@ interface MenuItem {
     category: string;
     subcategory: string;
     serves: string;
-    tag: string | null;
+    tag: string;
     active: boolean;
-    categoryActive: boolean;
+    subcategoryActive: boolean;
     clicks: number;
-    addone: any[]; // You can specify a type for addone based on its actual structure
+    addone: string[];
     type: string;
     __v: number;
-}
+  };
 
 const Menucard = ({ item }: { item: MenuItem }) => {
     const [isFavorite, setFavorite] = useState<boolean>(false);
@@ -31,7 +33,7 @@ const Menucard = ({ item }: { item: MenuItem }) => {
         <>
             <div onDoubleClick={() => {
                 setFavorite(true)
-            }} className="w-[330px] min-w-[330px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
+            }} className="w-[330px] min-w-[240px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
                 <div className='w-full h-fit flex justify-between'>
                     <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2 relative top-[1rem] left-[1rem]">
                         <div

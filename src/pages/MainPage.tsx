@@ -37,6 +37,8 @@ import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
 
 interface MenuItem {
+    likes: number;
+    likedBy: string[];
     _id: string;
     name: string;
     image: string[];
@@ -47,13 +49,12 @@ interface MenuItem {
     serves: string;
     tag: string;
     active: boolean;
-    categoryActive: boolean;
     subcategoryActive: boolean;
     clicks: number;
-    addone: any[]; // You can specify a type for addone based on its actual structure
+    addone: string[];
     type: string;
     __v: number;
-}
+};
 
 interface Subcategory {
     _id: string;
@@ -360,8 +361,8 @@ const MainPage = () => {
                                 <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
                                     <img src={item.image} alt={item.name} className='w-[32px] aspect-auto' />
                                     <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.filter(
-                                                (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
-                                            ).length})</span></p>
+                                        (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
+                                    ).length})</span></p>
                                 </div>
 
                                 <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
