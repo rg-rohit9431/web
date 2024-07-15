@@ -17,7 +17,7 @@ import { RxCrossCircled } from "react-icons/rx";
 //image
 import searchIcon from '../assets/searchIcon.png';
 import nothingfound from '../assets/no comments bubble.png';
-import Loader from '../components/Loader';
+//import Loader from '../components/Loader';
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
