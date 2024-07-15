@@ -98,21 +98,23 @@ const Searchpage: React.FC<SearchBarProps> = () => {
     else
         return (
             <>
-                <p className='font-inter font-[500] text-[1.4rem] leading-[2rem] m-[1rem]'>Search</p>
-                <div className='w-[90%] mx-auto px-[1rem] rounded-[8px] h-fit flex items-center justify-center mt-[1rem] border-[1px] relative'>
-                    <FaSearch className="text-[1.2rem] text-[#FFD600]" />
-                    <input
-                        className='w-full h-[3rem] ml-[.5rem] focus:outline-none '
-                        type="text"
-                        value={menuId}
-                        onChange={handleInputChange}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Search your favourite dish"
-                    />
-                    {menuId.length > 0 &&
-                        <RxCrossCircled
-                            className="text-[1.4rem] text-[#FFD600] absolute right-[1rem] top-[50%] translate-y-[-50%]"
-                            onClick={() => { setMenuId("") }} />}
+                <div className='w-full sticky top-0 z-[100] bg-white pb-[1rem]'>
+                    <p className='font-inter font-[500] text-[1.4rem] leading-[2rem] m-[1rem]'>Search</p>
+                    <div className='w-[90%] mx-auto px-[1rem] rounded-[8px] h-fit flex items-center justify-center mt-[1rem] border-[1px] relative'>
+                        <FaSearch className="text-[1.2rem] text-[#FFD600]" />
+                        <input
+                            className='w-full h-[3rem] ml-[.5rem] focus:outline-none '
+                            type="text"
+                            value={menuId}
+                            onChange={handleInputChange}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Search your favourite dish"
+                        />
+                        {menuId.length > 0 &&
+                            <RxCrossCircled
+                                className="text-[1.4rem] text-[#FFD600] absolute right-[1rem] top-[50%] translate-y-[-50%]"
+                                onClick={() => { setMenuId("") }} />}
+                    </div>
                 </div>
 
                 {
