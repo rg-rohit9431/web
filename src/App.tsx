@@ -3,7 +3,6 @@ import './App.css'
 
 //image
 
-
 //pages
 import Login from './pages/Login';
 import Otp from './pages/Otp';
@@ -12,12 +11,17 @@ import Searchpage from './pages/Searchpage';
 
 //components
 import ProtectedRoute from './components/ProtectedRoute';
-
-// Example: Assuming you have an isAuthenticated state
-const isAuthenticated = true; // Replace with actual authentication logic
+import { useEffect, useState } from 'react';
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+useEffect(() => {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    setIsAuthenticated(true);
+  }
+}, []);
   return (
     <>
       <Routes>

@@ -1,19 +1,23 @@
 import { useState, useRef } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
-
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 //image
 import Palmrecognition from '../assets/Palm recognition.png';
 
 
+import axios from "axios";
+
 const Otp = () => {
+    const location = useLocation();
+    const { formData, otpConfirmation } = location.state || {};
+    console.log(formData);
+
     const id = useParams();
     console.log(id);
     const newId = id;
     const navigate = useNavigate();
-    
-
+    const baseUrl = 'https://dolphin-app-fmayj.ondigitalocean.app';
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
     const inputsRef = useRef<HTMLInputElement[]>([]);
@@ -45,13 +49,46 @@ const Otp = () => {
         }
     };
 
+
+
+    const onOTPVerify = async () => {
+
+        try {
+            await otpConfirmation.confirm(otp);
+
+            let data = JSON.stringify(formData);
+
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `${baseUrl}/api/addUser`,
+                headers: {},
+                data: data
+            };
+
+            axios.request(config)
+                .then((response: any) => {
+                    console.log(JSON.stringify(response.data));
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                    navigate(`/restaurant/${newId}`)// navigate to home page
+                })
+                .catch((error: string) => {
+                    console.log(error);
+                });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Perform further processing, e.g., API call
+
+        onOTPVerify();
         console.log('OTP Submitted:', otp.join(''));
 
 
-        navigate(`/restaurant/${newId}`)// navigate to home page
     };
     return (
         <>

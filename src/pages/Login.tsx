@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
+import { auth } from "../firebase.config";
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 
 //image
 import logo from '../assets/logo.png';
@@ -19,7 +20,6 @@ interface FormData {
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState<FormData>({ name: '', gender: '', phone: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -30,10 +30,38 @@ const Login = () => {
     });
   };
 
+
+  // const initializeRecaptcha = () => {
+  //   if (!(window as any).recaptchaVerifier) {
+  //     (window as any).recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+  //       'size': 'invisible',
+  //       'callback': (response: any) => {
+  //         // reCAPTCHA solved, allow signInWithPhoneNumber.
+  //         onSignup();
+  //       }
+  //     }, auth);
+  //   }
+  // };
+
+  const onSignup = async () => {
+    console.log("inside onsignup");
+    try {
+      const recaptcha =  new RecaptchaVerifier(auth,"recaptcha-container",{});
+      const formatPh = "+91" + formData.phone;
+      const confirmation =await signInWithPhoneNumber(auth,formatPh,recaptcha);  
+      console.log(confirmation);
+
+      navigate('otp', { state: { formData, otpConfirmation: confirmation } });
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
-    navigate('otp');
+    onSignup();
   };
 
   return (
@@ -101,14 +129,14 @@ const Login = () => {
             />
           </div>
         </div>
+        <div id="recaptcha-container"></div>
+
         {/* submit button */}
         <button
           type="submit"
           className='w-[90%] h-[54px] mx-auto bg-[#FFD600] my-[1rem] rounded-md font-Roboto font-[500] leading-[30px] text-[20px] '
         >Continue</button>
       </form>
-
-
     </>
   )
 }
