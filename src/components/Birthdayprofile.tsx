@@ -1,10 +1,12 @@
 import { useState, ChangeEvent } from "react";
+import axios from "axios";
 //icons
 import { RxCross2 } from "react-icons/rx";
 
 
 //image
 import Calendar from "../assets/Calendar.png";
+import { baseUrl } from "../main";
 
 interface BirthdayprofileProps {
     isBirthdayOpen: boolean;
@@ -12,7 +14,7 @@ interface BirthdayprofileProps {
 }
 
 const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBirthdayOpen }) => {
-
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [birthday, setBirthday] = useState<string | null>(null);
     const [anniversary, setAnniversary] = useState<string>('');
     const [isBirthdayFilled, setIsBirthdayFilled] = useState<boolean>(false);
@@ -21,12 +23,49 @@ const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBi
         if (!isBirthdayFilled) {
             setBirthday(event.target.value);
             setIsBirthdayFilled(true);
+
+            let data = JSON.stringify(birthday);
+
+            let config = {
+                method: 'put',
+                maxBodyLength: Infinity,
+                url: `${baseUrl}/api/user/${user._id}`,
+                headers: {},
+                data: data
+            };
+
+            axios.request(config)
+                .then((response) => {
+                    console.log(JSON.stringify(response.data));
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
             console.log(`Birthday: ${event.target.value}`);
         }
     };
 
     const handleAnniversaryChange = (event: ChangeEvent<HTMLInputElement>) => {
         setAnniversary(event.target.value);
+        let data = JSON.stringify(anniversary);
+
+        let config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: `${baseUrl}/api/user/${user._id}`,
+            headers: {},
+            data: data
+        };
+
+        axios.request(config)
+            .then((response) => {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
         console.log(`Anniversary: ${event.target.value}`);
     };
     return (
@@ -85,7 +124,6 @@ const Birthdayprofile: React.FC<BirthdayprofileProps> = ({ isBirthdayOpen, setBi
                             />
                         </div>
                     </div>
-
                 </div>
             </div>
         </>

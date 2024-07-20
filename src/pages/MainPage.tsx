@@ -1,6 +1,6 @@
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
+import axios from 'axios';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
@@ -35,6 +35,7 @@ import Menuprofile from '../components/Menuprofile';
 import Shareprofile from '../components/Shareprofile';
 import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
+import { baseUrl } from '../main';
 
 interface MenuItem {
     likes: number;
@@ -97,6 +98,9 @@ const MainPage = () => {
     const { data, loading, error } = useAppSelector((state) => state.restaurant)
 
 
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
     const [isLogoutOpen, setLogoutOpen] = useState<boolean>(false);
@@ -142,6 +146,7 @@ const MainPage = () => {
             return typeMatch && tagMatch;
         });
     };
+    
     const scrollToElement = (id: string) => {
         const element = document.getElementById(id);
         const headerOffset = 180; // Adjust this value to match the height of your fixed header
@@ -165,8 +170,55 @@ const MainPage = () => {
 
     useEffect(() => {
         setBirthdayOpen(true);
+        
         if (id) {
             dispatch(fetchRestaurantDetails({ id }))
+        }
+
+        //for user visits
+        const storedValue = localStorage.getItem("snackBae_code");
+        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
+        if (isValueStored) {
+            const now = new Date().getTime();
+            const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
+            // we check if the item has expired
+            if (now - isValueStored.timestamp > twelveHours) {
+                localStorage.removeItem("snackBae_code");
+                isValueStored = null;
+            }
+        }
+        if (!isValueStored) {
+            const userString = localStorage.getItem("user");
+            
+            if (userString) {
+                const user = JSON.parse(userString);
+                
+                const userId = user?._id;
+
+                let data = '';
+
+                let config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
+                    headers: {},
+                    data: data
+                };
+
+                axios.request(config)
+                    .then((response) => {
+                        console.log(JSON.stringify(response.data));
+                        const item = {
+                            value: "for visitors data",
+                            timestamp: new Date().getTime() // current time in milliseconds
+                          };
+                          localStorage.setItem("snackBae_code", JSON.stringify(item));
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
         }
     }, []);
 
@@ -191,7 +243,7 @@ const MainPage = () => {
                     <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
                         <div className='w-fit flex items-start justify-between px-[1rem] py-[1rem]'>
                             <div className='mr-[.5rem]'>
-                                <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello Souptik</p>
+                                <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name}</p>
                                 <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its Lunch time</p>
                             </div>
                             <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
@@ -457,8 +509,6 @@ const MainPage = () => {
                         <Birthdayprofile isBirthdayOpen={isBirthdayOpen} setBirthdayOpen={setBirthdayOpen} />
                     </div>
                 }
-
-
             </>
         )
 }
