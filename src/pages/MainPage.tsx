@@ -1,21 +1,23 @@
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { fetchRestaurantDetails } from '../redux/slices/restaurentslice';
+import { fetchMostRecommandItemsDetails } from '../redux/slices/mostrecommandslice';
+import { favoriteMenuDetails } from '../redux/slices/favoriteslice';
 
 //image
 import Hand from '../assets/Hand.png';
 import foodoos from '../assets/foodoos.png';
 import Facebook from '../assets/Facebook.png';
 import instagram from '../assets/instagram.png';
-// import Star from '../assets/Star.png';
+import Star from '../assets/Star.png';
 import Fork from '../assets/Fork and Spoon.png';
 import zomato from '../assets/zomato.png';
 import google from '../assets/google.png';
-// import like from '../assets/like.png';
+import like from '../assets/like.png';
 import nocomments from '../assets/no comments bubble.png';
 
 
@@ -35,7 +37,7 @@ import Menuprofile from '../components/Menuprofile';
 import Shareprofile from '../components/Shareprofile';
 import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
-import { baseUrl } from '../main';
+// import { baseUrl } from '../main';
 
 interface MenuItem {
     likes: number;
@@ -93,13 +95,21 @@ interface Filters {
 
 
 const MainPage = () => {
-    const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>();
+    //redux
     const dispatch = useAppDispatch()
     const { data, loading, error } = useAppSelector((state) => state.restaurant)
+    const mostRecommand = useAppSelector((state) => state.mostRecommand)
+    const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
+    console.log("favoriteMenu ", favoriteMenu);
 
-
-    const userString = localStorage.getItem("user");
-    const user = userString ? JSON.parse(userString) : null;
+    // const userString = localStorage.getItem("user");
+    // const user = userString ? JSON.parse(userString) : null;
+    const user =
+    {
+        "name": "snacckbae", // temporary user name
+    }
+        ;
 
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
@@ -146,7 +156,7 @@ const MainPage = () => {
             return typeMatch && tagMatch;
         });
     };
-    
+
     const scrollToElement = (id: string) => {
         const element = document.getElementById(id);
         const headerOffset = 180; // Adjust this value to match the height of your fixed header
@@ -170,56 +180,61 @@ const MainPage = () => {
 
     useEffect(() => {
         setBirthdayOpen(true);
-        
+
         if (id) {
-            dispatch(fetchRestaurantDetails({ id }))
+            dispatch(fetchRestaurantDetails({ id }));
+            dispatch(fetchMostRecommandItemsDetails({ id }));
+        }
+        if (user && id) {
+            const userId = '6693c5b40f488bca9877662a';
+            dispatch(favoriteMenuDetails({ id, userId }));
         }
 
         //for user visits
-        const storedValue = localStorage.getItem("snackBae_code");
-        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
-        if (isValueStored) {
-            const now = new Date().getTime();
-            const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+        // const storedValue = localStorage.getItem("snackBae_code");
+        // let isValueStored = storedValue ? JSON.parse(storedValue) : null;
+        // if (isValueStored) {
+        //     const now = new Date().getTime();
+        //     const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 
-            // we check if the item has expired
-            if (now - isValueStored.timestamp > twelveHours) {
-                localStorage.removeItem("snackBae_code");
-                isValueStored = null;
-            }
-        }
-        if (!isValueStored) {
-            const userString = localStorage.getItem("user");
-            
-            if (userString) {
-                const user = JSON.parse(userString);
-                
-                const userId = user?._id;
+        //     // we check if the item has expired
+        //     if (now - isValueStored.timestamp > twelveHours) {
+        //         localStorage.removeItem("snackBae_code");
+        //         isValueStored = null;
+        //     }
+        // }
+        // if (!isValueStored) {
+        //     const userString = localStorage.getItem("user");
 
-                let data = '';
+        //     if (userString) {
+        //         const user = JSON.parse(userString);
 
-                let config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
-                    headers: {},
-                    data: data
-                };
+        //         const userId = user?._id;
 
-                axios.request(config)
-                    .then((response) => {
-                        console.log(JSON.stringify(response.data));
-                        const item = {
-                            value: "for visitors data",
-                            timestamp: new Date().getTime() // current time in milliseconds
-                          };
-                          localStorage.setItem("snackBae_code", JSON.stringify(item));
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        }
+        //         let data = '';
+
+        //         let config = {
+        //             method: 'post',
+        //             maxBodyLength: Infinity,
+        //             url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
+        //             headers: {},
+        //             data: data
+        //         };
+
+        //         axios.request(config)
+        //             .then((response) => {
+        //                 console.log(JSON.stringify(response.data));
+        //                 const item = {
+        //                     value: "for visitors data",
+        //                     timestamp: new Date().getTime() // current time in milliseconds
+        //                   };
+        //                   localStorage.setItem("snackBae_code", JSON.stringify(item));
+        //             })
+        //             .catch((error) => {
+        //                 console.log(error);
+        //             });
+        //     }
+        // }
     }, []);
 
     console.log(data);
@@ -313,7 +328,7 @@ const MainPage = () => {
                             onClick={() => {
                                 setCategoryOpen(!isCategoryOpen);
                             }} className='w-fit flex items-center gap-[10px] bg-[#000000] px-[1rem] py-[.5rem] rounded-[10px]'>
-                            <img src={Fork} alt="Fork and Spoon" className='w-[32px] aspect-auto' />
+                            <img src={Fork} alt="Fork and Spoon" className='w-[25px] aspect-auto' />
                             <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#FFFFFF]'>Menu</p>
                         </div>
 
@@ -404,6 +419,51 @@ const MainPage = () => {
                     </div>
                 </div>
 
+                {/* section 5  MostRecommandItems */}
+                <div className='w-full h-fit px-[1rem] mt-[1rem]'>
+                    <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
+                        <img src={Star} alt='star' className='w-[32px] aspect-auto' />
+                        <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Most Recommended <span>({mostRecommand?.data?.menuItems?.length})</span></p>
+                    </div>
+                    <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
+                        <div className={`w-[${mostRecommand?.data?.menuItems?.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                            {mostRecommand?.data?.menuItems?.map((menuItem: MenuItem) => (
+                                <div key={menuItem._id} onClick={() => {
+                                    setMenuOpen(true);
+                                    setModalData(menuItem);
+                                }}>
+                                    {
+                                        (() => {
+                                            const isFavorite = favoriteMenu?.data?.some((item: any) => item._id === menuItem._id);
+                                            return <Menucard item={menuItem} isFavorite={isFavorite} />
+                                        })()
+                                    }
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* section 5  favoutite */}
+
+                <div className='w-full h-fit px-[1rem] mt-[1rem]'>
+                    <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
+                        <img src={like} alt='like' className='w-[32px] aspect-auto' />
+                        <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Your Favourite <span>({favoriteMenu?.data?.length})</span></p>
+                    </div>
+                    <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
+                        <div className={`w-[${favoriteMenu?.data?.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                            {favoriteMenu?.data?.map((menuItem: MenuItem) => (
+                                <div key={menuItem._id} onClick={() => {
+                                    setMenuOpen(true);
+                                    setModalData(menuItem);
+                                }}>
+                                    <Menucard item={menuItem} isFavorite={true} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
                 {/* section 6  MenuItems */}
                 <div className='w-full h-fit'>
@@ -418,32 +478,35 @@ const MainPage = () => {
                                 </div>
 
                                 <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
-                                    <div>
-                                        {(() => {
-                                            const filteredMenuItems = filterMenuItems(item.menuItems).filter(
-                                                (menu: MenuItem) => menu.active === true && menu.subcategoryActive === true
-                                            );
-                                            console.log(filteredMenuItems);
+                                    {(() => {
+                                        const filteredMenuItems = filterMenuItems(item.menuItems).filter(
+                                            (menu: MenuItem) => menu.active === true && menu.subcategoryActive === true
+                                        );
+                                        console.log(filteredMenuItems);
 
-                                            return filteredMenuItems.length === 0 ? (
-                                                <div className='w-full h-fit flex flex-col justify-center items-center gap-[1rem]'>
-                                                    <img src={nocomments} alt="nocomments" className='w-[100px] aspect-auto' />
-                                                    <p className='font-[500] font-Sen text-[14px] leading-[20px] text-[#101828]'>No items available</p>
-                                                </div>
-                                            ) : (
-                                                <div className={`w-[${filteredMenuItems.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
-                                                    {filteredMenuItems.map((menuItem: MenuItem) => (
-                                                        <div key={menuItem._id} onClick={() => {
-                                                            setMenuOpen(true);
-                                                            setModalData(menuItem);
-                                                        }}>
-                                                            <Menucard item={menuItem} />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            );
-                                        })()}
-                                    </div>
+                                        return filteredMenuItems.length === 0 ? (
+                                            <div className='w-full h-fit flex flex-col justify-center items-center gap-[1rem]'>
+                                                <img src={nocomments} alt="nocomments" className='w-[100px] aspect-auto' />
+                                                <p className='font-[500] font-Sen text-[14px] leading-[20px] text-[#101828]'>No items available</p>
+                                            </div>
+                                        ) : (
+                                            <div className={`w-[${filteredMenuItems.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                                                {filteredMenuItems.map((menuItem: MenuItem) => (
+                                                    <div key={menuItem._id} onClick={() => {
+                                                        setMenuOpen(true);
+                                                        setModalData(menuItem);
+                                                    }}>
+                                                        {
+                                                            (() => {
+                                                                const isFavorite = favoriteMenu?.data?.some((item: any) => item._id === menuItem._id);
+                                                                return <Menucard item={menuItem} isFavorite={isFavorite} />
+                                                            })()
+                                                        }
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        );
+                                    })()}
                                 </div>
 
                             </div>
@@ -465,7 +528,12 @@ const MainPage = () => {
                 {
                     isMenuOpen &&
                     <div className='w-full h-0 relative '>
-                        <Menuprofile isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} modalData={modalData} />
+                        {
+                            (() => {
+                                const isFavorite = favoriteMenu?.data?.some((item: any) => item._id === modalData?._id);
+                                return <Menuprofile isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} modalData={modalData} isFavorite={isFavorite} />
+                            })()
+                        }
                     </div>
                 }
 
@@ -473,8 +541,8 @@ const MainPage = () => {
 
                 {
                     isFeedbackOpen &&
-                    <div className='w-full h-[100vh] fixed bottom-0 left-0 flex justify-center items-center bg-black bg-opacity-50'>
-                        <div className='w-[80%] h-fit bg-[#FFFFFF] rounded-[8px] p-[1rem]'>
+                    <div className='w-full h-[100vh] fixed bottom-0 left-0 flex justify-center items-center bg-black bg-opacity-50 z-[1000]'>
+                        <div className='w-[80%] max-w-[400px] h-fit bg-[#FFFFFF] rounded-[8px] p-[1rem]'>
                             <div className='w-full h-fit flex justify-between items-center  pb-[1rem] border-b-[1.5px] border-[#939393CC]'>
                                 <p className=' font-[500] font-inter text-[18px] leading-[30px] text-[#101828] ml-[.5rem]'>Write feedback</p>
                                 <RxCross2

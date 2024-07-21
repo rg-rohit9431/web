@@ -1,8 +1,4 @@
-
-
-
-
-import React, { useState } from 'react';
+import React from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -25,8 +21,9 @@ interface menuprofileProps {
   isMenuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   modalData: MenuItem | null;
+  isFavorite: boolean;
 }
-interface MenuItem  {
+interface MenuItem {
   likes: number;
   likedBy: string[];
   _id: string;
@@ -46,14 +43,14 @@ interface MenuItem  {
   __v: number;
 };
 
-const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, modalData }) => {
-  const [isFavorite, setFavorite] = useState<boolean>(false);
+const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, modalData, isFavorite }) => {
+  // const [isFavorite, setFavorite] = useState<boolean>(false);
 
 
   return (
     <>
       <div
-        onDoubleClick={() => { setFavorite(true); }} className={`w-full h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 comment overflow-y-scroll   ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        className={`w-full h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0  overflow-y-scroll transition duration-700 ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -65,7 +62,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
           </div>
         </div>
 
-        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll rounded-t-[6px]'>
+        <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll hideScroller rounded-t-[6px]'>
           <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px]'>
             <Swiper
               spaceBetween={30}
@@ -85,7 +82,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                 modalData?.image.map((image, index) => (
                   <SwiperSlide key={index}>
                     <div className='w-full h-full flex items-center justify-center'>
-                      <img src={image} alt="image" className='w-full h-full rounded-[10px] object-center' />
+                      <img src={image} alt="image" className='w-full max-w-[400px] aspect-auto rounded-[10px]' />
                     </div>
                   </SwiperSlide>
                 ))
@@ -116,9 +113,6 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                 id="favorite"
                 className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
                   } `}
-                onClick={() => {
-                  setFavorite(!isFavorite)
-                }}
               />
             </div>
 
@@ -128,7 +122,8 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
               <p className=' font-[600]  overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{modalData?.name}</p>
               <p className=' font-[600] overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{modalData?.serves}</p>
               <div className='w-full flex items-center justify-between'>
-                <p className=' font-[400] font-inter text-[1.1rem] leading-[30px]'>😍 <span className='text-[#000000A8]'>36 customer love this</span></p>
+                <p className=' font-[400] font-inter text-[1.1rem] leading-[30px]'>😍
+                  <span className='text-[#000000A8]'>{modalData?.likes} customer love this</span></p>
                 <p className=' font-[400] font-inter text-[1.1rem] leading-[27px] bg-[#FFD600] px-[1rem] py-[.5rem] rounded-md'>₹{modalData?.price}</p>
               </div>
 

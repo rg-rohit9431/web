@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { baseUrl } from '../main';
 
 //image
 import Palmrecognition from '../assets/Palm recognition.png';
@@ -17,7 +17,7 @@ const Otp = () => {
     console.log(id);
     const newId = id;
     const navigate = useNavigate();
-    const baseUrl = 'https://dolphin-app-fmayj.ondigitalocean.app';
+    // const baseUrl = 'https://dolphin-app-fmayj.ondigitalocean.app';
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
     const inputsRef = useRef<HTMLInputElement[]>([]);

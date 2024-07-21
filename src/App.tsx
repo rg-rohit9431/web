@@ -14,7 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { useEffect, useState } from 'react';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
 useEffect(() => {
   const userData = localStorage.getItem('user');

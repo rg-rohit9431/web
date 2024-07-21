@@ -1,6 +1,4 @@
 
-
-import { useState } from 'react';
 //image
 import blackstar from '../assets/blackstar.png';
 
@@ -27,13 +25,11 @@ interface MenuItem  {
     __v: number;
   };
 
-const Menucard = ({ item }: { item: MenuItem }) => {
-    const [isFavorite, setFavorite] = useState<boolean>(false);
+const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean }) => {    
+    
     return (
         <>
-            <div onDoubleClick={() => {
-                setFavorite(true)
-            }} className="w-[330px] min-w-[240px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
+            <div className="w-[330px] min-w-[240px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
                 <div className='w-full h-fit flex justify-between'>
                     <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2 relative top-[1rem] left-[1rem]">
                         <div
@@ -73,9 +69,6 @@ const Menucard = ({ item }: { item: MenuItem }) => {
                         id="favorite"
                         className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
                             } `}
-                        onClick={() => {
-                            setFavorite(!isFavorite)
-                        }}
                     />
                     <p className='font-[500] font-inter text-[16px] leading-[30px] text-[#0F172A]'>36k+ recommendation</p>
                 </div>
