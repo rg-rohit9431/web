@@ -17,7 +17,7 @@ import { RxCrossCircled } from "react-icons/rx";
 //image
 import searchIcon from '../assets/searchIcon.png';
 import nothingfound from '../assets/no comments bubble.png';
-import Loader from '../components/Loader';
+//import Loader from '../components/Loader';
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
@@ -52,8 +52,9 @@ const Searchpage: React.FC<SearchBarProps> = () => {
 
     //redux call
     const dispatch = useAppDispatch();
-    const { data, loading, error } = useAppSelector((state) => state.allMenuDetails);
+    const { data, error } = useAppSelector((state) => state.allMenuDetails);
     const searchmenu = useAppSelector((state) => state.searchMenu);
+    const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
 
     // normal const variable
     const [menuId, setMenuId] = useState<string>('');
@@ -93,26 +94,28 @@ const Searchpage: React.FC<SearchBarProps> = () => {
         }
     }, [id, isMenuOpen]);
 
-    if (loading) return <Loader />
+    //if (loading) return <Loader />
     if (error) return <div>Error: {error}</div>
     else
         return (
             <>
-                <p className='font-inter font-[500] text-[1.4rem] leading-[2rem] m-[1rem]'>Search</p>
-                <div className='w-[90%] mx-auto px-[1rem] rounded-[8px] h-fit flex items-center justify-center mt-[1rem] border-[1px] relative'>
-                    <FaSearch className="text-[1.2rem] text-[#FFD600]" />
-                    <input
-                        className='w-full h-[3rem] ml-[.5rem] focus:outline-none '
-                        type="text"
-                        value={menuId}
-                        onChange={handleInputChange}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Search your favourite dish"
-                    />
-                    {menuId.length > 0 &&
-                        <RxCrossCircled
-                            className="text-[1.4rem] text-[#FFD600] absolute right-[1rem] top-[50%] translate-y-[-50%]"
-                            onClick={() => { setMenuId("") }} />}
+                <div className='w-full sticky top-0 z-[100] bg-white pb-[1rem]'>
+                    <p className='font-inter font-[500] text-[1.4rem] leading-[2rem] m-[1rem]'>Search</p>
+                    <div className='w-[90%] mx-auto px-[1rem] rounded-[8px] h-fit flex items-center justify-center mt-[1rem] border-[1px] relative'>
+                        <FaSearch className="text-[1.2rem] text-[#FFD600]" />
+                        <input
+                            className='w-full h-[3rem] ml-[.5rem] focus:outline-none '
+                            type="text"
+                            value={menuId}
+                            onChange={handleInputChange}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Search your favourite dish"
+                        />
+                        {menuId.length > 0 &&
+                            <RxCrossCircled
+                                className="text-[1.4rem] text-[#FFD600] absolute right-[1rem] top-[50%] translate-y-[-50%]"
+                                onClick={() => { setMenuId("") }} />}
+                    </div>
                 </div>
 
                 {
@@ -295,7 +298,12 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                                                             setModalData(menu);
                                                             setMenuOpen(true);
                                                         }} key={index} >
-                                                            <Menucard item={menu} />
+                                                            {
+                                                                (() => {
+                                                                    const isFavorite = favoriteMenu?.data?.some((item: any) => item._id === menu._id);
+                                                                    return <Menucard item={menu} isFavorite={isFavorite} />
+                                                                })()
+                                                            }
                                                         </div>
                                                     ))
                                                 }
@@ -313,7 +321,12 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                 {
                     isMenuOpen &&
                     <div className='w-full h-0 relative '>
-                        <Menuprofile isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} modalData={modalData} />
+                        {
+                            (() => {
+                                const isFavorite = favoriteMenu?.data?.some((item: any) => item._id === modalData?._id);
+                                return <Menuprofile isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} modalData={modalData} isFavorite={isFavorite} />
+                            })()
+                        }
                     </div>
                 }
 
