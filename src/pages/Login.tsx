@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { auth } from "../firebase.config";
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import axios from 'axios';
 
 //image
 import logo from '../assets/logo.png';
@@ -43,25 +41,61 @@ const Login = () => {
   //   }
   // };
 
-  const onSignup = async () => {
-    console.log("inside onsignup");
-    try {
-      const recaptcha =  new RecaptchaVerifier(auth,"recaptcha-container",{});
-      const formatPh = "+91" + formData.phone;
-      const confirmation =await signInWithPhoneNumber(auth,formatPh,recaptcha);  
-      console.log(confirmation);
+  // const onSignup = async () => {
+  //   console.log("inside onsignup");
+  //   try {
+  //     const recaptcha =  new RecaptchaVerifier(auth,"recaptcha-container",{});
+  //     const formatPh = "+91" + formData.phone;
+  //     const confirmation =await signInWithPhoneNumber(auth,formatPh,recaptcha);  
+  //     console.log(confirmation);
 
-      navigate('otp', { state: { formData, otpConfirmation: confirmation } });
+  //     navigate('otp', { state: { formData, otpConfirmation: confirmation } });
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+
+
+  const handleLogin = async () => {
+    try {
+      let data = JSON.stringify({
+        "phoneNumber": "+91" + formData.phone,
+        "otpLength": 6,
+        "channel": "SMS",
+        "expiry": 180
+      });
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://auth.otpless.app/auth/otp/v1/send',
+        headers: {
+          'clientId': 'I11NELHRNXTHQQEUGNVLQXS41T2L7UDZ',
+          'clientSecret': '68g5e567j63kv3h7ahz976xj2sk7k46j',
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios.request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
     }
     catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
-    onSignup();
+    handleLogin();
   };
 
   return (
