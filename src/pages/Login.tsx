@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 //image
@@ -9,16 +9,19 @@ import loginAnimation from '../assets/loginAnimation.mp4';
 
 //icons
 import { CiUser } from "react-icons/ci";
+import toast from 'react-hot-toast';
 
 interface FormData {
   name: string;
   gender: string;
   phone: string;
+  orderId: string;
 }
 
 const Login = () => {
-  // const navigate = useNavigate();
-  const [formData, setFormData] = useState<FormData>({ name: '', gender: '', phone: '' });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({ name: '', gender: '', phone: '', orderId: '' });
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -28,39 +31,10 @@ const Login = () => {
     });
   };
 
-
-  // const initializeRecaptcha = () => {
-  //   if (!(window as any).recaptchaVerifier) {
-  //     (window as any).recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-  //       'size': 'invisible',
-  //       'callback': (response: any) => {
-  //         // reCAPTCHA solved, allow signInWithPhoneNumber.
-  //         onSignup();
-  //       }
-  //     }, auth);
-  //   }
-  // };
-
-  // const onSignup = async () => {
-  //   console.log("inside onsignup");
-  //   try {
-  //     const recaptcha =  new RecaptchaVerifier(auth,"recaptcha-container",{});
-  //     const formatPh = "+91" + formData.phone;
-  //     const confirmation =await signInWithPhoneNumber(auth,formatPh,recaptcha);  
-  //     console.log(confirmation);
-
-  //     navigate('otp', { state: { formData, otpConfirmation: confirmation } });
-  //   }
-  //   catch (err) {
-  //     console.log(err);
-  //   }
-  // }
-
-
   const handleLogin = async () => {
     try {
       let data = JSON.stringify({
-        "phoneNumber": "+91" + formData.phone,
+        "phoneNumber": "91" + formData.phone,
         "otpLength": 6,
         "channel": "SMS",
         "expiry": 180
@@ -81,6 +55,11 @@ const Login = () => {
       axios.request(config)
         .then((response) => {
           console.log(JSON.stringify(response.data));
+          toast.success('OTP sent successfully');
+          setFormData({
+            ...formData,
+            orderId: response.data.orderId
+          });
         })
         .catch((error) => {
           console.log(error);
@@ -96,6 +75,7 @@ const Login = () => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
     handleLogin();
+    navigate('otp', { state: { formData } });
   };
 
   return (
