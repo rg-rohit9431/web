@@ -39,7 +39,14 @@ import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
 // import { baseUrl } from '../main';
 
-interface MenuItem {
+export interface Addone {
+    _id: string;
+    name: string;
+    price: string;
+    __v: number;
+}
+
+export interface MenuItem {
     likes: number;
     likedBy: string[];
     _id: string;
@@ -53,13 +60,13 @@ interface MenuItem {
     tag: string;
     active: boolean;
     subcategoryActive: boolean;
-    clicks: number;
-    addone: string[];
+    clicks: number; // Added this field as it is not in the JSON data but might be needed
+    addone: Addone[]; // Adjusted this to be an array of strings (IDs), not Addone objects
     type: string;
     __v: number;
-};
+}
 
-interface Subcategory {
+export interface Subcategory {
     _id: string;
     name: string;
     image: string;
@@ -68,12 +75,13 @@ interface Subcategory {
     __v: number;
 }
 
-interface Category {
+export interface Category {
     _id: string;
     name: string;
     subcategory: Subcategory[];
     __v: number;
 }
+
 
 // interface Restaurant {
 //     _id: string;
@@ -108,8 +116,7 @@ const MainPage = () => {
     const user =
     {
         "name": "snacckbae", // temporary user name
-    }
-        ;
+    };
 
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
@@ -121,6 +128,7 @@ const MainPage = () => {
     const [showCategory, setShowCategory] = useState<boolean>(false);
     const [modalData, setModalData] = useState<MenuItem | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
+    const [meal, setMeal] = useState<string>('');
 
     const [filters, setFilters] = useState<Filters>({
         veg: false,
@@ -178,17 +186,37 @@ const MainPage = () => {
     console.log(filteredData);
 
 
+    const getCurrentMeal = (): string => {
+        const currentTime = new Date();
+        const currentHour = currentTime.getHours();
+
+        if (currentHour >= 5 && currentHour < 10) {
+            return 'Breakfast';
+        } else if (currentHour >= 10 && currentHour < 14) {
+            return 'Lunch';
+        } else if (currentHour >= 14 && currentHour < 18) {
+            return 'Snacks';
+        } else if (currentHour >= 18 && currentHour < 22) {
+            return 'Dinner';
+        } else {
+            return 'Late Night Snack';
+        }
+    };
+
+
     useEffect(() => {
         setBirthdayOpen(true);
+
+
+        //get update meal as breakfast, lunch and dinner and more...
+        const currentMeal = getCurrentMeal();
+        setMeal(currentMeal);
 
         if (id) {
             dispatch(fetchRestaurantDetails({ id }));
             dispatch(fetchMostRecommandItemsDetails({ id }));
         }
-        if (user && id) {
-            const userId = '6693c5b40f488bca9877662a';
-            dispatch(favoriteMenuDetails({ id, userId }));
-        }
+
 
         //for user visits
         // const storedValue = localStorage.getItem("snackBae_code");
@@ -240,16 +268,20 @@ const MainPage = () => {
     console.log(data);
 
     useEffect(() => {
+        if (user && id) {
+            const userId = '6693c7f4ab15d62273c90f83';
+            dispatch(favoriteMenuDetails({ id, userId }));
+        }
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
             document.body.style.overflow = 'hidden';
-        } else {
+        } else if (isFeedbackOpen === false || isShareOpen === false || isBirthdayOpen === false || isMenuOpen === false) {
             document.body.style.overflow = 'unset';
         }
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
     if (loading) return <Loader />
-    if (error) return <div>Error: {error}</div>
+    else if (error) return <div className='w-full h-[100vh] flex items-center justify-center'>Error</div>
     else
         return (
             <>
@@ -259,7 +291,7 @@ const MainPage = () => {
                         <div className='w-fit flex items-start justify-between px-[1rem] py-[1rem]'>
                             <div className='mr-[.5rem]'>
                                 <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name}</p>
-                                <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its Lunch time</p>
+                                <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its {meal} time</p>
                             </div>
                             <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
                         </div>
@@ -379,37 +411,57 @@ const MainPage = () => {
                                 }
                             </div>
                         </div>
+
                         {/* filter */}
                         <div className='w-full overflow-hidden'>
                             <div className='w-full flex items-center gap-[.5rem] overflow-scroll hideScroller'>
                                 {/* veg */}
-                                <div onClick={() => handleFilterToggle('veg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.veg === true ? 'border-[#2CAF29]' : 'border-[#12121214]'}`}>
+                                <div
+                                    onClick={() => {
+                                        scrollToElement("menu");
+                                        handleFilterToggle('veg');
+                                    }}
+                                    className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.veg === true ? 'border-[#2CAF29]' : 'border-[#12121214]'}`}>
                                     <div className='w-[10px] h-[10px] rounded-full bg-[#2CAF29]'></div>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>veg</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.veg === true ? 'text-[#2CAF29] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
                                 {/* nonVeg */}
-                                <div onClick={() => handleFilterToggle('nonVeg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.nonVeg === true ? 'border-[#F44336]' : 'border-[#12121214]'}`}>
+                                <div
+                                    onClick={() => {
+                                        scrollToElement("menu");
+                                        handleFilterToggle('nonVeg');
+                                    }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.nonVeg === true ? 'border-[#F44336]' : 'border-[#12121214]'}`}>
                                     <div className='w-[10px] h-[10px] rounded-full bg-[#F44336]'></div>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Non-veg</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.nonVeg === true ? 'text-[#F44336] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
 
                                 {/* Egg */}
-                                <div onClick={() => handleFilterToggle('egg')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.egg === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <div onClick={() => {
+                                    scrollToElement("menu");
+                                    handleFilterToggle('egg');
+                                }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.egg === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
                                     <div className='w-[10px] h-[10px] rounded-full bg-[#FFC107]'></div>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Egg</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.egg === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
 
                                 {/* bestSeller */}
-                                <div onClick={() => handleFilterToggle('bestSeller')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <div
+                                    onClick={() => {
+                                        scrollToElement("menu");
+                                        handleFilterToggle('bestSeller');
+                                    }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Best Seller</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.bestSeller === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
 
                                 {/* chefsChoice */}
-                                <div onClick={() => handleFilterToggle('chefsChoice')} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
+                                <div onClick={() => {
+                                    scrollToElement("menu");
+                                    handleFilterToggle('chefsChoice');
+                                }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Chef's Choice</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.chefsChoice === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
                                 </div>
@@ -425,8 +477,8 @@ const MainPage = () => {
                         <img src={Star} alt='star' className='w-[32px] aspect-auto' />
                         <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Most Recommended <span>({mostRecommand?.data?.menuItems?.length})</span></p>
                     </div>
-                    <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
-                        <div className={`w-[${mostRecommand?.data?.menuItems?.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                    <div className='w-full h-fit overflow-x-hidden my-[1rem]'>
+                        <div className={`w-[${mostRecommand?.data?.menuItems?.length * 330}px] h-fit flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
                             {mostRecommand?.data?.menuItems?.map((menuItem: MenuItem) => (
                                 <div key={menuItem._id} onClick={() => {
                                     setMenuOpen(true);
@@ -446,27 +498,30 @@ const MainPage = () => {
 
                 {/* section 5  favoutite */}
 
-                <div className='w-full h-fit px-[1rem] mt-[1rem]'>
-                    <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
-                        <img src={like} alt='like' className='w-[32px] aspect-auto' />
-                        <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Your Favourite <span>({favoriteMenu?.data?.length})</span></p>
-                    </div>
-                    <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
-                        <div className={`w-[${favoriteMenu?.data?.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
-                            {favoriteMenu?.data?.map((menuItem: MenuItem) => (
-                                <div key={menuItem._id} onClick={() => {
-                                    setMenuOpen(true);
-                                    setModalData(menuItem);
-                                }}>
-                                    <Menucard item={menuItem} isFavorite={true} />
-                                </div>
-                            ))}
+                {
+                    favoriteMenu?.data?.length > 0 &&
+                    <div className='w-full h-fit px-[1rem] mt-[1rem]'>
+                        <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
+                            <img src={like} alt='like' className='w-[32px] aspect-auto' />
+                            <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>Your Favourite <span>({favoriteMenu?.data?.length})</span></p>
+                        </div>
+                        <div className='w-full h-fit overflow-x-hidden mt-[1rem]'>
+                            <div className={`w-[${favoriteMenu?.data?.length * 330}px] flex gap-[1rem] overflow-x-scroll scroller hideScroller`}>
+                                {favoriteMenu?.data?.map((menuItem: MenuItem) => (
+                                    <div key={menuItem._id} onClick={() => {
+                                        setMenuOpen(true);
+                                        setModalData(menuItem);
+                                    }}>
+                                        <Menucard item={menuItem} isFavorite={true} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 {/* section 6  MenuItems */}
-                <div className='w-full h-fit'>
+                <div id='menu' className='w-full h-fit mb-[15vh] mt-[1rem]'>
                     {
                         filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active).map((item: Subcategory) => (
                             <div id={item.name} className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>

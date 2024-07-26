@@ -1,4 +1,189 @@
-import React from 'react';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import { baseUrl } from '../main';
+
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -16,6 +201,9 @@ import { FaHeart } from "react-icons/fa6";
 
 //image
 import blackstar from '../assets/blackstar.png';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { MenuItem } from '../pages/MainPage';
 
 interface menuprofileProps {
   isMenuOpen: boolean;
@@ -23,34 +211,47 @@ interface menuprofileProps {
   modalData: MenuItem | null;
   isFavorite: boolean;
 }
-interface MenuItem {
-  likes: number;
-  likedBy: string[];
-  _id: string;
-  name: string;
-  image: string[];
-  description: string;
-  price: string;
-  category: string;
-  subcategory: string;
-  serves: string;
-  tag: string;
-  active: boolean;
-  subcategoryActive: boolean;
-  clicks: number;
-  addone: string[];
-  type: string;
-  __v: number;
-};
 
 const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, modalData, isFavorite }) => {
-  // const [isFavorite, setFavorite] = useState<boolean>(false);
+  const [isFavoriteMenu, setFavoriteMenu] = useState<boolean>(isFavorite);
+  const resId = useParams().id;
+
+  //user
+  const user = {
+    '_id': '6693c7f4ab15d62273c90f83',
+  }
+  
+  const toggleFavoriteMenu = async () => {
+    try {
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${baseUrl}/api/favourites/${user._id}/${modalData?._id}/${resId}`,
+        headers: {}
+      };
+
+      axios.request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+          setFavoriteMenu(!isFavoriteMenu);
+          isFavoriteMenu ? toast.success('Menu removed from favourites') : toast.success('Menu added to favourites');
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error(error.message);
+        });
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   return (
     <>
       <div
-        className={`w-full h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0  overflow-y-scroll transition duration-700 ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        className={`w-full max-w-[400px] left-[50%] translate-x-[-50%] h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0  overflow-y-scroll transition duration-700 ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -63,6 +264,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
         </div>
 
         <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll hideScroller rounded-t-[6px]'>
+          {/* image */}
           <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px]'>
             <Swiper
               spaceBetween={30}
@@ -82,7 +284,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                 modalData?.image.map((image, index) => (
                   <SwiperSlide key={index}>
                     <div className='w-full h-full flex items-center justify-center'>
-                      <img src={image} alt="image" className='w-full max-w-[400px] aspect-auto rounded-[10px]' />
+                      <img src={image} alt="image" className='w-full max-w-[400px] aspect-auto object-contain rounded-[10px]' />
                     </div>
                   </SwiperSlide>
                 ))
@@ -110,8 +312,11 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                 }
               </div>
               <FaHeart
+                onClick={() => {
+                  toggleFavoriteMenu();
+                }}
                 id="favorite"
-                className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
+                className={`text-[1.6rem] cursor-pointer  ${isFavoriteMenu ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
                   } `}
               />
             </div>
@@ -138,16 +343,23 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
 
 
           {/* addone */}
-          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px] mb-[1rem]'>
-            <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
-
-            <div className='flex justify-between items-center'>
-              <p className=' font-[400] font-inter text-[18px] leading-[30px]'>{modalData?.name}</p>
-              <p className=' font-[400] font-inter text-[18px] leading-[30px]'>{modalData?.price}</p>
+          {/* {
+            modalData?.addone?.length > 0 &&
+            <div className='w-[95%] mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px] mb-[1rem]'>
+              <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
+              {
+                modalData?.addone.map((addone) => (
+                  <div key={addone?._id} className='flex items-center justify-between w-full mt-[.5rem]'>
+                    <p className=' font-[400] font-inter text-[18px] leading-[30px] capitalize'>{addone.name}</p>
+                    <p className=' font-[400] font-inter text-[18px] leading-[30px]'>₹{addone.price}</p>
+                  </div>
+                ))
+              }
             </div>
-          </div>
+          } */}
+
         </div>
-      </div>
+      </div >
     </>
   )
 }

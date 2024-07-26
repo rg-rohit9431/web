@@ -107,9 +107,9 @@ const Shareprofile: React.FC<ShareprofileProps> = ({ isShareOpen, setShareOpen }
                         </EmailShareButton>
                     </div>
 
-                    <div className='w-[90%] mx-auto h-fit p-[1rem] border-2 border-[#00000054] mt-[2rem] rounded-[8px]'>
+                    {/* <div className='w-[90%] mx-auto h-fit p-[1rem] border-2 border-[#00000054] mt-[2rem] rounded-[8px]'>
                         <p className='text-[#0B0B0B] font-[400] font-Monda text-[18px] leading-[21.19px] mt-[.5rem] text-nowrap text-ellipsis overflow-hidden'>{shareUrl}</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

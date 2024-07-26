@@ -1,29 +1,10 @@
-
+import { MenuItem } from '../pages/MainPage';
 //image
 import blackstar from '../assets/blackstar.png';
 
 //icons
 import { FaHeart } from "react-icons/fa6";
 
-interface MenuItem  {
-    likes: number;
-    likedBy: string[];
-    _id: string;
-    name: string;
-    image: string[];
-    description: string;
-    price: string;
-    category: string;
-    subcategory: string;
-    serves: string;
-    tag: string;
-    active: boolean;
-    subcategoryActive: boolean;
-    clicks: number;
-    addone: string[];
-    type: string;
-    __v: number;
-  };
 
 const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean }) => {    
     
