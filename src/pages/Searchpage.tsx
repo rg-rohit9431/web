@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { MenuItem } from './MainPage';
 
 // components
 import Menuprofile from '../components/Menuprofile';
@@ -22,30 +23,6 @@ import nothingfound from '../assets/no comments bubble.png';
 interface SearchBarProps {
     onSearch: (query: string) => void;
 }
-
-interface MenuItem {
-    likes: number;
-    likedBy: string[];
-    _id: string;
-    name: string;
-    image: string[];
-    description: string;
-    price: string;
-    category: string;
-    subcategory: string;
-    serves: string;
-    tag: string;
-    active: boolean;
-    subcategoryActive: boolean;
-    clicks: number;
-    addone: string[];
-    type: string;
-    __v: number;
-};
-
-
-
-
 
 const Searchpage: React.FC<SearchBarProps> = () => {
     const { id } = useParams<{ id: string }>();
