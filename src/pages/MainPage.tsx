@@ -39,7 +39,7 @@ import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
 // import { baseUrl } from '../main';
 
-export interface Addone {
+interface Addone {
     _id: string;
     name: string;
     price: string;
