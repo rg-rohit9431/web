@@ -1,8 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, } from 'react-router-dom';
 import axios from 'axios';
 import Palmrecognition from '../assets/Palm recognition.png';
 import toast from 'react-hot-toast';
+import { baseUrl } from '../main';
 
 interface FormData {
     name: string;
@@ -74,34 +75,94 @@ const Otp: React.FC = () => {
         }
     };
 
+    const addUser = () => {
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `${baseUrl}/api/addUser`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: formData
+        };
+
+        axios.request(config)
+            .then((response) => {
+                console.log(JSON.stringify(response.data));
+
+                localStorage.setItem('user', JSON.stringify(response.data.user))
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+
+
     const otpVerify = async () => {
         try {
-            const data = JSON.stringify({
-                orderId: formData.orderId,
-                otp: otp.join(''),
-                phoneNumber: `91${formData.phone}`
+            let data = JSON.stringify({
+                "phoneNumber": `91${formData.phone}`,
+                "orderId": formData.orderId,
+                "otp": otp.join(''),
+                "clientId": "8TPPGON8VH9R9HTCCQNN5LLGZTZAHZ2N",
+                "clientSecret": "13l19zkrepn7ru1lg9sbqxjnzzumu9vj"
             });
 
-            const config = {
-                method: 'post',
+            let config = {
+                method: 'put',
                 maxBodyLength: Infinity,
-                url: 'https://auth.otpless.app/auth/otp/v1/verify',
+                url: `${baseUrl}/api/otp`,
                 headers: {
-                    clientId: 'I11NELHRNXTHQQEUGNVLQXS41T2L7UDZ',
-                    clientSecret: '68g5e567j63kv3h7ahz976xj2sk7k46j',
                     'Content-Type': 'application/json'
                 },
-                data
+                data: data
             };
 
-            const response = await axios.request(config);
-            console.log(JSON.stringify(response.data));
-            response.data.isOTPVerified ?
-                (
-                    toast.success('Login successful'),
-                    navigate(`/restaurant/${newId}`)
-                ) :
-                (toast.error('OTP is not valid'))
+            axios.request(config)
+                .then((response) => {
+                    console.log(JSON.stringify(response.data));
+
+                    if (response.data.data.isOTPVerified) {
+                        toast.success('Login successful')
+
+
+                        let config = {
+                            method: 'get',
+                            maxBodyLength: Infinity,
+                            url: `${baseUrl}/api/checkContactExists/${formData?.phone}`,
+                            headers: {}
+                        };
+
+                        axios.request(config)
+                            .then((response) => {
+                                console.log(JSON.stringify(response.data));
+
+                                if (response?.data?.data != null && response.data?.data?.length != 0) {
+                                    localStorage.setItem('user', JSON.stringify(response?.data?.data))
+                                } else {
+                                    addUser();
+                                }
+                                setTimeout(() => {
+                                    navigate('/restaurant/' + newId)
+                                }, 1000)
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+
+
+                    } else {
+                        toast.error('OTP is not valid')
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+
+
         } catch (error) {
             console.log(error);
             toast.error((error as Error).message);
@@ -111,20 +172,25 @@ const Otp: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         otpVerify();
-        
+
     };
 
-    const handleResendOTP = async() => {
-
+    const handleResend = async () => {
         try {
+
             let data = JSON.stringify({
-                "orderId": formData.orderId,
+                "phoneNumber": "91" + formData.phone,
+                "otpLength": 6,
+                "channel": "SMS",
+                "expiry": 60,
+                "clientId": "8TPPGON8VH9R9HTCCQNN5LLGZTZAHZ2N",
+                "clientSecret": "13l19zkrepn7ru1lg9sbqxjnzzumu9vj"
             });
 
             let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'https://auth.otpless.app/auth/otp/v1/resend',
+                url: `${baseUrl}/api/otp`,
                 headers: {
                     'clientId': 'I11NELHRNXTHQQEUGNVLQXS41T2L7UDZ',
                     'clientSecret': '68g5e567j63kv3h7ahz976xj2sk7k46j',
@@ -135,20 +201,18 @@ const Otp: React.FC = () => {
 
             axios.request(config)
                 .then((response) => {
-                    console.log(JSON.stringify(response.data));
-                    toast.success('OTP has been sent to your phone number');
-                    console.log('Resend OTP');
+                    console.log((response.data));
+                    toast.success('OTP sent successfully');
+                    formData.orderId = response.data.data.orderId;
                     setSeconds(60);
                     setIsResendDisabled(true);
                     startTimer();
                 })
                 .catch((error) => {
                     console.log(error);
-                    toast.error((error as Error).message);
                 });
-
-
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err);
         }
     };
@@ -186,7 +250,9 @@ const Otp: React.FC = () => {
                     </div>
 
                     <div className='w-full flex flex-row flex-wrap gap-[.7rem] mt-[1rem]'>
-                        <p>Didn’t receive OTP? <span>{isResendDisabled ? `Resend in 00:${seconds < 10 ? `0${seconds}` : seconds}` : <button type="button" onClick={handleResendOTP} disabled={isResendDisabled} className="text-blue-500">Resend OTP</button>}</span></p>
+                        <p>Didn’t receive OTP? <span>{isResendDisabled ? `Resend in 00:${seconds < 10 ? `0${seconds}` : seconds}` : <button type="button" onClick={() => {
+                            handleResend();
+                        }} disabled={isResendDisabled} className="text-blue-500">Resend OTP</button>}</span></p>
                     </div>
                     <button
                         type="submit"

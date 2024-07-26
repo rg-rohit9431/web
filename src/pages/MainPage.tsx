@@ -1,6 +1,7 @@
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
+import { baseUrl } from '../main';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
@@ -111,12 +112,9 @@ const MainPage = () => {
     const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
     console.log("favoriteMenu ", favoriteMenu);
 
-    // const userString = localStorage.getItem("user");
-    // const user = userString ? JSON.parse(userString) : null;
-    const user =
-    {
-        "name": "snacckbae", // temporary user name
-    };
+    const userData = localStorage.getItem("user");
+    const user = userData ? JSON.parse(userData) : null;
+    console.log(user)
 
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
@@ -205,7 +203,10 @@ const MainPage = () => {
 
 
     useEffect(() => {
-        setBirthdayOpen(true);
+
+        if (!user?.birthday || !user?.anniversary) {
+            setBirthdayOpen(true);
+        }
 
 
         //get update meal as breakfast, lunch and dinner and more...
@@ -219,57 +220,57 @@ const MainPage = () => {
 
 
         //for user visits
-        // const storedValue = localStorage.getItem("snackBae_code");
-        // let isValueStored = storedValue ? JSON.parse(storedValue) : null;
-        // if (isValueStored) {
-        //     const now = new Date().getTime();
-        //     const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+        const storedValue = localStorage.getItem("snackBae_code");
+        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
+        if (isValueStored) {
+            const now = new Date().getTime();
+            const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 
-        //     // we check if the item has expired
-        //     if (now - isValueStored.timestamp > twelveHours) {
-        //         localStorage.removeItem("snackBae_code");
-        //         isValueStored = null;
-        //     }
-        // }
-        // if (!isValueStored) {
-        //     const userString = localStorage.getItem("user");
+            // we check if the item has expired
+            if (now - isValueStored.timestamp > twelveHours) {
+                localStorage.removeItem("snackBae_code");
+                isValueStored = null;
+            }
+        }
+        if (!isValueStored) {
+            const userString = localStorage.getItem("user");
 
-        //     if (userString) {
-        //         const user = JSON.parse(userString);
+            if (userString) {
+                const user = JSON.parse(userString);
 
-        //         const userId = user?._id;
+                const userId = user?._id;
 
-        //         let data = '';
+                let data = '';
 
-        //         let config = {
-        //             method: 'post',
-        //             maxBodyLength: Infinity,
-        //             url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
-        //             headers: {},
-        //             data: data
-        //         };
+                let config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
+                    headers: {},
+                    data: data
+                };
 
-        //         axios.request(config)
-        //             .then((response) => {
-        //                 console.log(JSON.stringify(response.data));
-        //                 const item = {
-        //                     value: "for visitors data",
-        //                     timestamp: new Date().getTime() // current time in milliseconds
-        //                   };
-        //                   localStorage.setItem("snackBae_code", JSON.stringify(item));
-        //             })
-        //             .catch((error) => {
-        //                 console.log(error);
-        //             });
-        //     }
-        // }
+                axios.request(config)
+                    .then((response) => {
+                        console.log("userfound ", JSON.stringify(response.data));
+                        const item = {
+                            value: "for visitors data",
+                            timestamp: new Date().getTime() // current time in milliseconds
+                        };
+                        localStorage.setItem("snackBae_code", JSON.stringify(item));
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }
     }, []);
 
     console.log(data);
 
     useEffect(() => {
         if (user && id) {
-            const userId = '6693c7f4ab15d62273c90f83';
+            const userId = user._id;
             dispatch(favoriteMenuDetails({ id, userId }));
         }
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
@@ -317,7 +318,14 @@ const MainPage = () => {
                                     <RiShareForwardLine className='text-[1.4rem] font-bold text-[#64748B]' />
                                     <p className='text-[#64748B] font-[400] font-Roboto text-[18px] leading-[21.09px]'>Share</p>
                                 </div>
-                                <div className='flex items-center gap-[.5rem] p-[1.5rem]'>
+                                <div
+                                    onClick={
+                                        () => {
+                                            localStorage.removeItem("user");
+                                            window.location.reload();
+                                        }
+                                    }
+                                    className='flex items-center gap-[.5rem] p-[1.5rem]'>
                                     <IoLogOutOutline className='text-[1.4rem] font-bold text-[#C62828]' />
                                     <p className='text-[#C62828] font-[400] font-Roboto text-[18px] leading-[21.09px]'>Log Out</p>
                                 </div>
@@ -334,7 +342,7 @@ const MainPage = () => {
                                 <p className=' font-[600] font-inter text-[24px] leading-[23px] text-wrap'>{data?.resName}</p>
                                 <div className='flex'>
                                     <IoLocationOutline className='text-[1.1rem]' />
-                                    <p className=' font-[500] font-Roboto text-[16px] leading-[20px]'>Salt Lake</p>
+                                    <p className=' font-[500] font-Roboto text-[16px] leading-[20px]'>{data?.additionalDetails?.city}</p>
                                 </div>
                             </div>
                         </div>

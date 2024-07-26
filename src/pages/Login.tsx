@@ -10,6 +10,7 @@ import loginAnimation from '../assets/loginAnimation.mp4';
 //icons
 import { CiUser } from "react-icons/ci";
 import toast from 'react-hot-toast';
+import { baseUrl } from '../main';
 
 interface FormData {
   name: string;
@@ -33,17 +34,20 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
+      
       let data = JSON.stringify({
         "phoneNumber": "91" + formData.phone,
         "otpLength": 6,
         "channel": "SMS",
-        "expiry": 180
+        "expiry": 60,
+        "clientId": "8TPPGON8VH9R9HTCCQNN5LLGZTZAHZ2N",
+        "clientSecret": "13l19zkrepn7ru1lg9sbqxjnzzumu9vj"
       });
 
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://auth.otpless.app/auth/otp/v1/send',
+        url: `${baseUrl}/api/otp`,
         headers: {
           'clientId': 'I11NELHRNXTHQQEUGNVLQXS41T2L7UDZ',
           'clientSecret': '68g5e567j63kv3h7ahz976xj2sk7k46j',
@@ -54,17 +58,14 @@ const Login = () => {
 
       axios.request(config)
         .then((response) => {
-          console.log(JSON.stringify(response.data));
+          console.log((response.data));
           toast.success('OTP sent successfully');
-          setFormData({
-            ...formData,
-            orderId: response.data.orderId
-          });
+          formData.orderId = response.data.data.orderId;
+          navigate('otp', { state: { formData } });
         })
         .catch((error) => {
           console.log(error);
         });
-
     }
     catch (err) {
       console.log(err);
@@ -75,7 +76,7 @@ const Login = () => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
     handleLogin();
-    navigate('otp', { state: { formData } });
+    
   };
 
   return (

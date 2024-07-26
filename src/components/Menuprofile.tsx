@@ -36,10 +36,10 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
   const resId = useParams().id;
 
   //user
-  const user = {
-    '_id': '6693c7f4ab15d62273c90f83',
-  }
-  
+  const userData = localStorage.getItem("user");
+  const user = userData ? JSON.parse(userData) : null;
+  console.log(user)
+
   const toggleFavoriteMenu = async () => {
     try {
 

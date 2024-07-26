@@ -1,43 +1,41 @@
-import { Routes, Route } from 'react-router-dom';
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
 
-//image
-
-//pages
+// Pages
 import Login from './pages/Login';
 import Otp from './pages/Otp';
 import MainPage from './pages/MainPage';
 import Searchpage from './pages/Searchpage';
 
-//components
+// Components
 import ProtectedRoute from './components/ProtectedRoute';
-import { useEffect, useState } from 'react';
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+const App: React.FC = () => {
 
-useEffect(() => {
-  const userData = localStorage.getItem('user');
-  if (userData) {
-    setIsAuthenticated(true);
-  }
-}, []);
+ 
+
   return (
     <>
       <Routes>
-        {/* auth: */}
+        {/* Auth Routes */}
         <Route path="/restaurant/:id/login" element={<Login />} />
         <Route path="/restaurant/:id/login/otp" element={<Otp />} />
 
-        {/* main pages and search Routes */}
-        <Route path="/restaurant/:id" element={<ProtectedRoute element={MainPage} isAuthenticated={isAuthenticated} />} />
-        <Route path="/restaurant/:id/search" element={<ProtectedRoute element={Searchpage} isAuthenticated={isAuthenticated} />} />
+        {/* Main Pages and Search Routes */}
+        <Route
+          path="/restaurant/:id"
+          element={<ProtectedRoute element={MainPage} />}
+        />
+        <Route
+          path="/restaurant/:id/search"
+          element={<ProtectedRoute element={Searchpage}  />}
+        />
 
-        {/* 404 */}
-        {/* <Route path="*" element={<Navigate to="login" />} /> */}
+        {/* 404 Redirect */}
+        <Route path="*" element={<Navigate to="/restaurant/:id/login" />} />
       </Routes>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
