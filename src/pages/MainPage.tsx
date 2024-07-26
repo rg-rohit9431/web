@@ -339,8 +339,19 @@ const MainPage = () => {
                             </div>
                         </div>
                         <div className='w-fit flex items-center gap-[10px]'>
-                            <img src={Facebook} alt="Facebook" className='w-[32px]' />
-                            <img src={instagram} alt="instagram" className='w-[32px]' />
+                            {
+                                data?.additionalDetails?.facebook &&
+                                <Link target='_blank' to={`${data?.additionalDetails?.facebook}`}>
+                                    <img src={Facebook} alt="Facebook" className='w-[32px]' />
+                                </Link>
+                            }
+
+                            {
+                                data?.additionalDetails?.instagram &&
+                                <Link target='_blank' to={`${data?.additionalDetails?.instagram}`}>
+                                    <img src={instagram} alt="instagram" className='w-[32px]' />
+                                </Link>
+                            }
                         </div>
                     </div>
                 </div>
@@ -606,10 +617,10 @@ const MainPage = () => {
                                     }} className='text-[1.2rem] cursor-pointer' />
                             </div>
 
-                            <Link to='' className='w-[100%]  h-fit px-[1rem] py-[1.5rem] bg-[#E23744] rounded-[8px] flex items-center justify-center mt-[1rem]'>
+                            <Link target='_blank' to={`${data?.additionalDetails?.zomato}`} className='w-[100%]  h-fit px-[1rem] py-[1.5rem] bg-[#E23744] rounded-[8px] flex items-center justify-center mt-[1rem]'>
                                 <img src={zomato} alt="zomato" className='w-[100px] aspect-auto' />
                             </Link>
-                            <Link to='' className='w-[100%]  h-fit mt-[1rem] px-[1rem] py-[1rem] bg-[#F0EFEF] rounded-[8px] flex items-center justify-center'>
+                            <Link target='_blank' to={`${data?.additionalDetails?.google}`} className='w-[100%]  h-fit mt-[1rem] px-[1rem] py-[1rem] bg-[#F0EFEF] rounded-[8px] flex items-center justify-center'>
                                 <img src={google} alt="google" className='w-[100px] aspect-auto' />
                             </Link>
                         </div>
