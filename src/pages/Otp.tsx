@@ -68,7 +68,7 @@ const Otp: React.FC = () => {
 
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
-        const pastedData = e.clipboardData.getData('text').slice(0, 6);
+        const pastedData = e.clipboardData.getData('number').slice(0, 6);
         if (/^\d{6}$/.test(pastedData)) {
             setOtp(pastedData.split(''));
             inputsRef.current[5]?.focus();
@@ -159,6 +159,7 @@ const Otp: React.FC = () => {
                 })
                 .catch((error) => {
                     console.log(error);
+                    toast.error(error.message);
                 });
 
 
@@ -230,14 +231,14 @@ const Otp: React.FC = () => {
                 </div>
                 <img src={Palmrecognition} alt="Palmrecognition" className='w-[40%] aspect-auto' />
             </div>
-            <div className='w-full h-fit px-[1rem]'>
+            <div className='w-full h-fit px-[.5rem]'>
                 <p className=' font-[600] font-inter text-[18px] leading-[23.4px] mt-[1rem] uppercase'>Enter OTP</p>
                 <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-[1rem]">
-                    <div className='w-full flex flex-row flex-wrap gap-[.7rem] mt-[1rem]'>
+                    <div className='w-full flex flex-row justify-evenly gap-[.5rem] mt-[1rem]'>
                         {otp.map((digit, index) => (
                             <input
                                 key={index}
-                                type="text"
+                                type="number"
                                 maxLength={1}
                                 value={digit}
                                 onChange={(e) => handleChange(e, index)}

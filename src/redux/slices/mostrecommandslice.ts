@@ -20,7 +20,7 @@ export const fetchMostRecommandItemsDetails = createAsyncThunk<any, { id: string
     async ({ id }, thunkAPI) => {
       try {
         const response = await axios.get(`${baseUrl}/api/mostRecommandMenu/${id}`)
-        console.log(response.data)
+        // console.log(response.data);
         return response.data
       } catch (error: any) {
         return thunkAPI.rejectWithValue(error.response.data)

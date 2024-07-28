@@ -85,7 +85,6 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                             type="text"
                             value={menuId}
                             onChange={handleInputChange}
-                            onKeyPress={handleKeyPress}
                             placeholder="Search your favourite dish"
                         />
                         {menuId.length > 0 &&
@@ -268,7 +267,7 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                                         :
 
                                         (
-                                            <div className='w-full flex flex-col items-center gap-[1rem] py-[2rem]'>
+                                            <div className='w-full flex flex-col items-center gap-[1rem] pb-[1rem]'>
                                                 {
                                                     searchmenu?.data?.menuItems?.map((menu: MenuItem, index: number) => (
                                                         <div onClick={() => {

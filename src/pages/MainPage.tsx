@@ -11,7 +11,6 @@ import { favoriteMenuDetails } from '../redux/slices/favoriteslice';
 
 //image
 import Hand from '../assets/Hand.png';
-import foodoos from '../assets/foodoos.png';
 import Facebook from '../assets/Facebook.png';
 import instagram from '../assets/instagram.png';
 import Star from '../assets/Star.png';
@@ -110,11 +109,11 @@ const MainPage = () => {
     const { data, loading, error } = useAppSelector((state) => state.restaurant)
     const mostRecommand = useAppSelector((state) => state.mostRecommand)
     const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
-    console.log("favoriteMenu ", favoriteMenu);
+    // console.log("favoriteMenu ", favoriteMenu);
 
     const userData = localStorage.getItem("user");
     const user = userData ? JSON.parse(userData) : null;
-    console.log(user)
+    // console.log(user)
 
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
@@ -125,85 +124,17 @@ const MainPage = () => {
     const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
     const [showCategory, setShowCategory] = useState<boolean>(false);
     const [modalData, setModalData] = useState<MenuItem | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<string>("food menu");
     const [meal, setMeal] = useState<string>('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
 
-    const [filters, setFilters] = useState<Filters>({
-        veg: false,
-        nonVeg: false,
-        egg: false,
-        bestSeller: false,
-        chefsChoice: false
-    });
-    const handleFilterToggle = (filter: keyof Filters) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [filter]: !prevFilters[filter]
-        }));
-    };
-
-    const filterMenuItems = (menuItems: MenuItem[]) => {
-        return menuItems.filter((menu) => {
-            const vegMatch = filters.veg && menu.type === 'veg';
-            const nonVegMatch = filters.nonVeg && menu.type === 'nonveg';
-            const eggMatch = filters.egg && menu.type === 'egg';
-
-            const chefChoiceMatch = filters.chefsChoice && menu.tag === 'chefchoice';
-            const bestSellerMatch = filters.bestSeller && menu.tag === 'bestseller';
-
-            const typeMatch = filters.veg || filters.nonVeg || filters.egg
-                ? vegMatch || nonVegMatch || eggMatch
-                : true;
-
-            const tagMatch = filters.chefsChoice || filters.bestSeller
-                ? chefChoiceMatch || bestSellerMatch
-                : true;
-
-            return typeMatch && tagMatch;
-        });
-    };
-
-    const scrollToElement = (id: string) => {
-        const element = document.getElementById(id);
-        const headerOffset = 180; // Adjust this value to match the height of your fixed header
-
-        if (element) {
-            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - headerOffset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth',
-            });
-        } else {
-            console.warn(`Element with ID "${id}" not found.`);
+    useEffect(() => {
+        if (data && data.category && data.category.length > 0) {
+            setSelectedCategory(data.category[0].name);
         }
-    };
-
-    const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
-    console.log(filteredData);
-
-
-    const getCurrentMeal = (): string => {
-        const currentTime = new Date();
-        const currentHour = currentTime.getHours();
-
-        if (currentHour >= 5 && currentHour < 10) {
-            return 'Breakfast';
-        } else if (currentHour >= 10 && currentHour < 14) {
-            return 'Lunch';
-        } else if (currentHour >= 14 && currentHour < 18) {
-            return 'Snacks';
-        } else if (currentHour >= 18 && currentHour < 22) {
-            return 'Dinner';
-        } else {
-            return 'Late Night Snack';
-        }
-    };
+    }, [data]);
 
 
     useEffect(() => {
-
         if (!user?.birthday || !user?.anniversary) {
             setBirthdayOpen(true);
         }
@@ -266,7 +197,7 @@ const MainPage = () => {
         }
     }, []);
 
-    console.log(data);
+    // console.log(data);
 
     useEffect(() => {
         if (user && id) {
@@ -281,6 +212,82 @@ const MainPage = () => {
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
+
+
+    const [filters, setFilters] = useState<Filters>({
+        veg: false,
+        nonVeg: false,
+        egg: false,
+        bestSeller: false,
+        chefsChoice: false
+    });
+    const handleFilterToggle = (filter: keyof Filters) => {
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [filter]: !prevFilters[filter]
+        }));
+    };
+
+    const filterMenuItems = (menuItems: MenuItem[]) => {
+        return menuItems.filter((menu) => {
+            const vegMatch = filters.veg && menu.type === 'veg';
+            const nonVegMatch = filters.nonVeg && menu.type === 'nonveg';
+            const eggMatch = filters.egg && menu.type === 'egg';
+
+            const chefChoiceMatch = filters.chefsChoice && menu.tag === 'chefchoice';
+            const bestSellerMatch = filters.bestSeller && menu.tag === 'bestseller';
+
+            const typeMatch = filters.veg || filters.nonVeg || filters.egg
+                ? vegMatch || nonVegMatch || eggMatch
+                : true;
+
+            const tagMatch = filters.chefsChoice || filters.bestSeller
+                ? chefChoiceMatch || bestSellerMatch
+                : true;
+
+            return typeMatch && tagMatch;
+        });
+    };
+
+    const scrollToElement = (id: string) => {
+        const element = document.getElementById(id);
+        const headerOffset = 180; // Adjust this value to match the height of your fixed header
+
+        if (element) {
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth',
+            });
+        } else {
+            console.warn(`Element with ID "${id}" not found.`);
+        }
+    };
+
+    const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
+    // console.log(filteredData);
+
+
+    const getCurrentMeal = (): string => {
+        const currentTime = new Date();
+        const currentHour = currentTime.getHours();
+
+        if (currentHour >= 5 && currentHour < 10) {
+            return 'Breakfast';
+        } else if (currentHour >= 10 && currentHour < 14) {
+            return 'Lunch';
+        } else if (currentHour >= 14 && currentHour < 18) {
+            return 'Snacks';
+        } else if (currentHour >= 18 && currentHour < 22) {
+            return 'Dinner';
+        } else {
+            return 'Late Night Snack';
+        }
+    };
+
+
     if (loading) return <Loader />
     else if (error) return <div className='w-full h-[100vh] flex items-center justify-center'>Error</div>
     else
@@ -291,7 +298,7 @@ const MainPage = () => {
                     <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
                         <div className='w-fit flex items-start justify-between px-[1rem] py-[1rem]'>
                             <div className='mr-[.5rem]'>
-                                <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name}</p>
+                                <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name.split(' ')[0]}</p>
                                 <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its {meal} time</p>
                             </div>
                             <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
@@ -337,9 +344,10 @@ const MainPage = () => {
                     {/* section2 */}
                     <div className='w-[90%] h-fit mx-auto rounded-[20px] bg-[#FFFFFF] flex flex-wrap gap-[.5rem] justify-between items-center px-[1rem] py-[.5rem] shadow-lg'>
                         <div className='h-full w-fit flex items-center gap-[.5rem]'>
-                            <img src={foodoos} alt="foodoos" className='h-[60px] aspect-auto rounded-full' />
+                            <img src={data?.additionalDetails?.image} alt="logo" className='h-[60px] aspect-auto rounded-full' />
                             <div className='w-fit flex flex-col gap-[.5rem]'>
-                                <p className=' font-[600] font-inter text-[24px] leading-[23px] text-wrap'>{data?.resName}</p>
+                                <p className=' font-[600] font-inter text-[24px] leading-[23px] text-wrap'>
+                                    {data?.resName?.split(' ').length >2 ? data?.resName?.split(' ')[0] : data?.resName}</p>
                                 <div className='flex'>
                                     <IoLocationOutline className='text-[1.1rem]' />
                                     <p className=' font-[500] font-Roboto text-[16px] leading-[20px]'>{data?.additionalDetails?.city}</p>
@@ -385,13 +393,16 @@ const MainPage = () => {
 
                         {
                             isCategoryOpen &&
-                            <div className=' absolute top-[5rem] right-[1rem]  py-[1rem] px-[1.5rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[1px] shadow-md border-[#12121214]'>
+                            <div className=' max-w-[200px] absolute top-[5rem] right-[1rem]  py-[1rem] px-[1.5rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[1px] shadow-md border-[#12121214]'>
                                 {
                                     filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
-                                        <p onClick={() => {
-                                            scrollToElement(item?.name);
-                                            setCategoryOpen(!isCategoryOpen);
-                                        }} key={item?._id} className=' font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] pt-[1.2rem]'>
+                                        <p
+                                            onClick={() => {
+                                                scrollToElement(item?.name);
+                                                setCategoryOpen(!isCategoryOpen);
+                                            }}
+                                            key={item?._id}
+                                            className=' text-ellipsis overflow-hidden text-nowrap font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] pt-[1.2rem]'>
                                             {item?.name} ({item?.menuItems.filter(
                                                 (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
                                             ).length})
@@ -545,7 +556,10 @@ const MainPage = () => {
                         filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active).map((item: Subcategory) => (
                             <div id={item.name} className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
                                 <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
-                                    <img src={item.image} alt={item.name} className='w-[32px] aspect-auto' />
+                                    {
+                                        item?.image &&
+                                        <img src={item?.image} alt={item.name} className='w-[40px] aspect-auto' />
+                                    }
                                     <p className='font-[500] font-inter text-[18px] leading-[30px] text-[#101828]'>{item.name} <span>({item.menuItems.filter(
                                         (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
                                     ).length})</span></p>
@@ -556,7 +570,7 @@ const MainPage = () => {
                                         const filteredMenuItems = filterMenuItems(item.menuItems).filter(
                                             (menu: MenuItem) => menu.active === true && menu.subcategoryActive === true
                                         );
-                                        console.log(filteredMenuItems);
+                                        // console.log(filteredMenuItems);
 
                                         return filteredMenuItems.length === 0 ? (
                                             <div className='w-full h-fit flex flex-col justify-center items-center gap-[1rem]'>
@@ -625,12 +639,19 @@ const MainPage = () => {
                                     }} className='text-[1.2rem] cursor-pointer' />
                             </div>
 
-                            <Link target='_blank' to={`${data?.additionalDetails?.zomato}`} className='w-[100%]  h-fit px-[1rem] py-[1.5rem] bg-[#E23744] rounded-[8px] flex items-center justify-center mt-[1rem]'>
-                                <img src={zomato} alt="zomato" className='w-[100px] aspect-auto' />
-                            </Link>
-                            <Link target='_blank' to={`${data?.additionalDetails?.google}`} className='w-[100%]  h-fit mt-[1rem] px-[1rem] py-[1rem] bg-[#F0EFEF] rounded-[8px] flex items-center justify-center'>
-                                <img src={google} alt="google" className='w-[100px] aspect-auto' />
-                            </Link>
+                            {
+                                data?.additionalDetails?.zomato &&
+                                <Link target='_blank' to={`${data?.additionalDetails?.zomato}`} className='w-[100%]  h-fit px-[1rem] py-[1.5rem] bg-[#E23744] rounded-[8px] flex items-center justify-center mt-[1rem]'>
+                                    <img src={zomato} alt="zomato" className='w-[100px] aspect-auto' />
+                                </Link>
+                            }
+
+                            {
+                                data?.additionalDetails?.google &&
+                                <Link target='_blank' to={`${data?.additionalDetails?.google}`} className='w-[100%]  h-fit px-[1rem] py-[1.5rem] bg-[#F0EFEF] rounded-[8px] flex items-center justify-center mt-[1rem]'>
+                                    <img src={google} alt="google" className='w-[100px] aspect-auto' />
+                                </Link>
+                            }
                         </div>
                     </div>
                 }

@@ -6,8 +6,8 @@ import blackstar from '../assets/blackstar.png';
 import { FaHeart } from "react-icons/fa6";
 
 
-const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean }) => {    
-    
+const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean }) => {
+
     return (
         <>
             <div className="w-[330px] min-w-[240px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
@@ -37,7 +37,13 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
                     <div className='w-[65%] h-fit '>
                         <p className=' font-[600] h-[30px] overflow-hidden text-nowrap font-inter text-[18px] leading-[30px] text-ellipsis'>{item?.name}</p>
                         <p className=' font-[600] font-inter text-[17px] leading-[30px] text-ellipsis text-[#0F172A]'>₹ {item?.price}</p>
-                        <p className=' font-[400] h-[50px] overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>{item?.description}</p>
+                        <p className=' font-[400] h-[50px] overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>
+                            {
+                                item?.description.length < 60 ? item?.description :
+                                    item?.description.slice(0, 60) + "..."
+                            }
+
+                        </p>
                     </div>
                     <img src={item?.image[0]} alt="image" className='w-[30%] aspect-auto object-contain' />
                 </div>
@@ -45,13 +51,15 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
                 <p className='border-[1.3px] border-[#00000033] w-[90%] mx-auto mt-[.5rem]'></p>
 
 
-                <div className='w-[90%] mx-auto flex gap-[2rem] items-center py-[.5rem] px-[.5rem]'>
+                <div className='w-[90%] mx-auto flex gap-[1rem] items-center py-[.5rem] px-[.5rem]'>
                     <FaHeart
                         id="favorite"
                         className={`text-[1.6rem] cursor-pointer  ${isFavorite ? "fill-[#ED4F4F] overflow-hidden" : "fill-gray-300"
                             } `}
                     />
-                    <p className='font-[500] font-inter text-[16px] leading-[30px] text-[#0F172A]'>36k+ recommendation</p>
+                    <p className='font-[500] font-inter text-[17px] leading-[30px] text-[#0F172A]'>
+                        {item?.likes > 1000 ? `${(item?.likes / 1000).toFixed(1)}k+` : item?.likes} 
+                        <span> recommendation</span></p>
                 </div>
             </div>
         </>

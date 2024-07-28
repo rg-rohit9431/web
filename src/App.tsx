@@ -32,7 +32,7 @@ const App: React.FC = () => {
         />
 
         {/* 404 Redirect */}
-        <Route path="*" element={<Navigate to="/restaurant/:id/login" />} />
+        {/* <Route path="*" element={<Navigate to="/restaurant/:id/login" />} /> */}
       </Routes>
     </>
   );

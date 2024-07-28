@@ -155,15 +155,18 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
           </div>
 
           {/* description */}
-          <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
-            <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Description</p>
-            <p className=' font-[400] font-inter text-[18px] leading-[30px] text-[#64748B]'>{modalData?.description}</p>
-          </div>
+          {
+            modalData?.description &&
+            <div className='w-[95%]  mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+              <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Description</p>
+              <p className=' font-[400] font-inter text-[18px] leading-[30px] text-[#64748B]'>{modalData?.description}</p>
+            </div>
+          }
 
 
           {/* addone */}
-          {/* {
-            modalData?.addone?.length > 0 &&
+          {
+            modalData?.addone?.length &&
             <div className='w-[95%] mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px] mb-[1rem]'>
               <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
               {
@@ -175,7 +178,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
                 ))
               }
             </div>
-          } */}
+          }
 
         </div>
       </div >
