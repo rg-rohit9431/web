@@ -85,6 +85,7 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                             type="text"
                             value={menuId}
                             onChange={handleInputChange}
+                            onKeyDown={handleKeyPress}
                             placeholder="Search your favourite dish"
                         />
                         {menuId.length > 0 &&
