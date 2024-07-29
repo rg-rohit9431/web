@@ -292,7 +292,7 @@ const MainPage = () => {
 
 
     if (loading) return <Loader />
-    else if (error) return <div className='w-full h-[100vh] flex items-center justify-center'>Error</div>
+    if (error) return <div className='w-full h-[100vh] flex items-center justify-center'>Error</div>
     else
         return (
             <>
@@ -300,7 +300,7 @@ const MainPage = () => {
                     {/* section1 */}
                     <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
                         <div className='w-fit px-[1rem] py-[1rem]'>
-                            <div className='flex gap-[.5rem] items-start justify-between'>
+                            <div className='flex gap-[.5rem]'>
                                 <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name.split(' ')[0]}</p>
                                 <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
                             </div>
@@ -426,7 +426,7 @@ const MainPage = () => {
                                 }
                             } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
                             <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828] text-nowrap'>{selectedCategory}</p>
-                            <IoChevronDown className={`text-[16px] duration-200 ease-in-out transition ${showCategory? 'transform rotate-180' : ''}`} />
+                            <IoChevronDown className={`text-[16px] duration-200 ease-in-out transition ${showCategory ? 'transform rotate-180' : ''}`} />
                             <div>
                                 {
                                     showCategory &&
@@ -481,23 +481,23 @@ const MainPage = () => {
                                 </div>
 
                                 {/* bestSeller */}
-                                <div
+                                {/* <div
                                     onClick={() => {
                                         scrollToElement("menu");
                                         handleFilterToggle('bestSeller');
                                     }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.bestSeller === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Best Seller</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.bestSeller === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
-                                </div>
+                                </div> */}
 
                                 {/* chefsChoice */}
-                                <div onClick={() => {
+                                {/* <div onClick={() => {
                                     scrollToElement("menu");
                                     handleFilterToggle('chefsChoice');
                                 }} className={`border-2 rounded-[8px] px-[.7rem] py-[.4rem] flex gap-[.3rem] items-center ${filters.chefsChoice === true ? 'border-[#FFC107]' : 'border-[#12121214]'}`}>
                                     <p className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] text-nowrap'>Chef's Choice</p>
                                     <RxCross2 className={`text-[19px] font-[700]  ${filters.chefsChoice === true ? 'text-[#FFC107] ' : 'text-[#12121214] hidden'} `} />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 
@@ -680,7 +680,7 @@ const MainPage = () => {
                 {/* section 12  Made with love in the city of Joy */}
 
                 <div className='w-full h-fit p-[1rem]'>
-                    <img src={logo} alt="logo" className='w-[200px] aspect-auto' />
+                    <img src={logo} alt="logo" className='w-[200px] aspect-auto opacity-40' />
                     <p className=' font-Exo font-[400] text-[14px] leading-[16.48px] text-[#565656] pl-[.5rem]'>Made with 💖 in the city of Joy</p>
                 </div>
             </>

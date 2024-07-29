@@ -12,6 +12,8 @@ import { CiUser } from "react-icons/ci";
 import toast from 'react-hot-toast';
 import { baseUrl } from '../main';
 
+//components
+
 interface FormData {
   name: string;
   gender: string;
@@ -22,7 +24,6 @@ interface FormData {
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({ name: '', gender: '', phone: '', orderId: '' });
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -68,15 +69,19 @@ const Login = () => {
         .catch((error) => {
           console.log(error);
         });
+
+
     }
     catch (err) {
       console.log(err);
     }
+
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
+
     handleLogin();
 
   };
@@ -152,7 +157,9 @@ const Login = () => {
         <button
           type="submit"
           className='w-[90%] h-[54px] mx-auto bg-[#FFD600] my-[1rem] rounded-md font-Roboto font-[500] leading-[30px] text-[20px] '
-        >Continue</button>
+        >
+          Continue
+        </button>
       </form>
     </>
   )

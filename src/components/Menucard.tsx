@@ -1,6 +1,7 @@
 import { MenuItem } from '../pages/MainPage';
 //image
 import blackstar from '../assets/blackstar.png';
+import noImage from '../assets/no image.png';
 
 //icons
 import { FaHeart } from "react-icons/fa6";
@@ -11,6 +12,7 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
     return (
         <>
             <div className="w-[330px] min-w-[280px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
+
                 <div className='w-full h-[30px] flex justify-between'>
                     <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2 relative top-[1rem] left-[1rem]">
                         <div
@@ -45,7 +47,19 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
 
                         </p>
                     </div>
-                    <img src={item?.image[0]} alt="image" className='h-[80px] w-[80px] object-cover  rounded-[5px]' />
+                    {
+                        item?.image[0] ?
+                            (
+                                <img src={item?.image[0]} alt="image" className='h-[80px] w-[80px] object-cover  rounded-[5px]' />
+                            )
+                            :
+                            (
+                                <div className='w-[80px] h-[80px] rounded-[5px] bg-[#00000021] flex justify-center items-center'>
+                                    <img src={noImage} alt="image" className='h-[40px] w-[40px] object-cover  rounded-[5px]' />
+                                </div>
+                            )
+
+                    }
                 </div>
 
                 <p className='border-[1.3px] border-[#00000033] w-[90%] mx-auto mt-[.5rem]'></p>
@@ -58,8 +72,9 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
                             } `}
                     />
                     <p className='font-[500] font-inter text-[17px] leading-[30px] text-[#0F172A]'>
-                        {item?.likes > 1000 ? `${(item?.likes / 1000).toFixed(1)}k+` : item?.likes} 
-                        <span> recommendation</span></p>
+                        {item?.likes > 1000 ? `${(item?.likes / 1000).toFixed(1)}k+` : item?.likes}
+                        <span> recommendation</span>
+                    </p>
                 </div>
             </div>
         </>
