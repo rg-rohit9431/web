@@ -19,6 +19,7 @@ import zomato from '../assets/zomato.png';
 import google from '../assets/google.png';
 import like from '../assets/like.png';
 import nocomments from '../assets/no comments bubble.png';
+import logo from '../assets/logo.png';
 
 
 //icons
@@ -135,74 +136,30 @@ const MainPage = () => {
 
 
     useEffect(() => {
+
         if (!user?.birthday || !user?.anniversary) {
             setBirthdayOpen(true);
         }
 
+        if (id) {
+            dispatch(fetchRestaurantDetails({ id }));
+        }
 
         //get update meal as breakfast, lunch and dinner and more...
         const currentMeal = getCurrentMeal();
         setMeal(currentMeal);
 
-        if (id) {
-            dispatch(fetchRestaurantDetails({ id }));
-            dispatch(fetchMostRecommandItemsDetails({ id }));
-        }
-
-
-        //for user visits
-        const storedValue = localStorage.getItem("snackBae_code");
-        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
-        if (isValueStored) {
-            const now = new Date().getTime();
-            const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-
-            // we check if the item has expired
-            if (now - isValueStored.timestamp > twelveHours) {
-                localStorage.removeItem("snackBae_code");
-                isValueStored = null;
-            }
-        }
-        if (!isValueStored) {
-            const userString = localStorage.getItem("user");
-
-            if (userString) {
-                const user = JSON.parse(userString);
-
-                const userId = user?._id;
-
-                let data = '';
-
-                let config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
-                    headers: {},
-                    data: data
-                };
-
-                axios.request(config)
-                    .then((response) => {
-                        console.log("userfound ", JSON.stringify(response.data));
-                        const item = {
-                            value: "for visitors data",
-                            timestamp: new Date().getTime() // current time in milliseconds
-                        };
-                        localStorage.setItem("snackBae_code", JSON.stringify(item));
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        }
+        checkAndUpdateVisitorData();
     }, []);
 
     // console.log(data);
 
     useEffect(() => {
+
         if (user && id) {
             const userId = user._id;
             dispatch(favoriteMenuDetails({ id, userId }));
+            dispatch(fetchMostRecommandItemsDetails({ id }));
         }
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
             document.body.style.overflow = 'hidden';
@@ -212,6 +169,52 @@ const MainPage = () => {
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
+
+    const checkAndUpdateVisitorData = () => {
+        const storedValue = localStorage.getItem("snackBae_code");
+        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
+        const now = new Date().getTime();
+        const twelveHours = 12 * 60 * 60 * 1000;
+
+        if (isValueStored && (now - isValueStored.timestamp > twelveHours)) {
+            localStorage.removeItem("snackBae_code");
+            isValueStored = null;
+        }
+
+        if (!isValueStored) {
+            const userString = localStorage.getItem("user");
+            if (userString) {
+                const user = JSON.parse(userString);
+                const userId = user?._id;
+
+                const config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
+                    headers: {},
+                    data: ''
+                };
+
+                axios.request(config)
+                    .then(response => {
+                        console.log("user found", response.data);
+                        const item = {
+                            value: "for visitors data",
+                            timestamp: new Date().getTime()
+                        };
+                        const currentSnackBaeCode = localStorage.getItem("snackBae_code");
+
+                        // Only set the new value if it is different
+                        if (!currentSnackBaeCode || currentSnackBaeCode !== JSON.stringify(item)) {
+                            localStorage.setItem("snackBae_code", JSON.stringify(item));
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        }
+    };
 
 
     const [filters, setFilters] = useState<Filters>({
@@ -296,12 +299,12 @@ const MainPage = () => {
                 <div className="w-full min-h-[200px] h-fit bg-[#FFD628] rounded-b-[30px]">
                     {/* section1 */}
                     <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
-                        <div className='w-fit flex items-start justify-between px-[1rem] py-[1rem]'>
-                            <div className='mr-[.5rem]'>
+                        <div className='w-fit px-[1rem] py-[1rem]'>
+                            <div className='flex gap-[.5rem] items-start justify-between'>
                                 <p className=' font-[700] font-Sen text-[21px] leading-[25.27px]'>Hello {user?.name.split(' ')[0]}</p>
-                                <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its {meal} time</p>
+                                <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
                             </div>
-                            <img src={Hand} alt="Hand" className='w-[25px] aspect-auto' />
+                            <p className='text-[#444343] font-[700] font-Sen text-[17px] leading-[16.94px]'>Its {meal} time</p>
                         </div>
                         <HiOutlineDotsVertical
                             onClick={
@@ -347,7 +350,7 @@ const MainPage = () => {
                             <img src={data?.additionalDetails?.image} alt="logo" className='h-[60px] aspect-auto rounded-full' />
                             <div className='w-fit flex flex-col gap-[.5rem]'>
                                 <p className=' font-[600] font-inter text-[24px] leading-[23px] text-wrap'>
-                                    {data?.resName?.split(' ').length >2 ? data?.resName?.split(' ')[0] : data?.resName}</p>
+                                    {data?.resName?.split(' ').length > 2 ? data?.resName?.split(' ')[0] : data?.resName}</p>
                                 <div className='flex'>
                                     <IoLocationOutline className='text-[1.1rem]' />
                                     <p className=' font-[500] font-Roboto text-[16px] leading-[20px]'>{data?.additionalDetails?.city}</p>
@@ -393,7 +396,7 @@ const MainPage = () => {
 
                         {
                             isCategoryOpen &&
-                            <div className=' max-w-[200px] absolute top-[5rem] right-[1rem]  py-[1rem] px-[1.5rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[1px] shadow-md border-[#12121214]'>
+                            <div className=' max-w-[200px] absolute top-[5rem] right-[1rem] px-[1.5rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller border-[1px] shadow-md border-[#12121214]'>
                                 {
                                     filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active == true).map((item: Subcategory) => (
                                         <p
@@ -402,7 +405,7 @@ const MainPage = () => {
                                                 setCategoryOpen(!isCategoryOpen);
                                             }}
                                             key={item?._id}
-                                            className=' text-ellipsis overflow-hidden text-nowrap font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] pt-[1.2rem]'>
+                                            className=' text-ellipsis overflow-hidden text-nowrap font-[500] font-inter text-[19px] leading-[21.78px] text-[#101828] py-[.7rem]'>
                                             {item?.name} ({item?.menuItems.filter(
                                                 (menu: MenuItem) => menu?.active === true && menu?.subcategoryActive === true
                                             ).length})
@@ -423,16 +426,16 @@ const MainPage = () => {
                                 }
                             } className='px-[.5rem] py-[.7rem]  border-[1px] border-[#00000099] flex justify-between gap-[.5rem] items-center rounded-[8px] relative'>
                             <p className=' font-[400] font-inter text-[16px] leading-[19.36px] text-[#101828] text-nowrap'>{selectedCategory}</p>
-                            <IoChevronDown className='text-[16px]' />
+                            <IoChevronDown className={`text-[16px] duration-200 ease-in-out transition ${showCategory? 'transform rotate-180' : ''}`} />
                             <div>
                                 {
                                     showCategory &&
-                                    <div className='absolute top-[3rem] left-0  p-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller  py-[.5rem] z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
+                                    <div className='absolute top-[3rem] left-0 px-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller   z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
                                         {
                                             data?.category?.map((item: Category) => (
                                                 <p onClick={() => {
                                                     setSelectedCategory(item.name);
-                                                }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] pt-[1rem] text-nowrap'>
+                                                }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] py-[.5rem] text-nowrap'>
                                                     {item?.name}
                                                 </p>
                                             ))
@@ -551,10 +554,10 @@ const MainPage = () => {
                 }
 
                 {/* section 6  MenuItems */}
-                <div id='menu' className='w-full h-fit mb-[15vh] mt-[1rem]'>
+                <div id='menu' className='w-full h-fit mt-[1rem]'>
                     {
                         filteredData?.subcategory.filter((subcategory: Subcategory) => subcategory.active).map((item: Subcategory) => (
-                            <div id={item.name} className='w-full h-fit px-[1rem] py-[1rem] ' key={item._id}>
+                            <div id={item.name} className='w-full h-fit px-[1rem]  ' key={item._id}>
                                 <div className='py-[.5rem] px-[1rem] flex gap-[1rem] items-center border-b-[1px] '>
                                     {
                                         item?.image &&
@@ -603,13 +606,15 @@ const MainPage = () => {
                 </div>
 
                 {/* section 7  feedback */}
-
-                <div onClick={() => {
-                    setFeedbackOpen(true);
-                }}
-                    className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[85vh] right-0 bg-black text-white rounded-l-[10px]' >
-                    <FaPlus className='text-[1.1rem] mr-[.5rem]' /> Feedback
-                </div >
+                {
+                    (data?.additionalDetails?.zomato || data?.additionalDetails?.google) &&
+                    <div onClick={() => {
+                        setFeedbackOpen(true);
+                    }}
+                        className='w-fit h-fit flex items-center px-[1rem] py-[1rem] fixed top-[85vh] right-0 bg-black text-white rounded-l-[10px]' >
+                        <FaPlus className='text-[1.1rem] mr-[.5rem]' /> FeedBack
+                    </div >
+                }
 
                 {/* section 8  popup for menuprofile */}
 
@@ -628,7 +633,7 @@ const MainPage = () => {
                 {/* section 9  popup for feedback */}
 
                 {
-                    isFeedbackOpen &&
+                    isFeedbackOpen && (data?.additionalDetails?.zomato || data?.additionalDetails?.google) &&
                     <div className='w-full h-[100vh] fixed bottom-0 left-0 flex justify-center items-center bg-black bg-opacity-50 z-[1000]'>
                         <div className='w-[80%] max-w-[400px] h-fit bg-[#FFFFFF] rounded-[8px] p-[1rem]'>
                             <div className='w-full h-fit flex justify-between items-center  pb-[1rem] border-b-[1.5px] border-[#939393CC]'>
@@ -672,6 +677,12 @@ const MainPage = () => {
                         <Birthdayprofile isBirthdayOpen={isBirthdayOpen} setBirthdayOpen={setBirthdayOpen} />
                     </div>
                 }
+                {/* section 12  Made with love in the city of Joy */}
+
+                <div className='w-full h-fit p-[1rem]'>
+                    <img src={logo} alt="logo" className='w-[200px] aspect-auto' />
+                    <p className=' font-Exo font-[400] text-[14px] leading-[16.48px] text-[#565656] pl-[.5rem]'>Made with 💖 in the city of Joy</p>
+                </div>
             </>
         )
 }

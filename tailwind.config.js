@@ -10,6 +10,7 @@ export default {
         'Sen': ['Sen'],
         'Poppins':['Poppins'],
         'Monda':['Monda'],
+        'Exo':['Exo 2'],
 
       },
     },

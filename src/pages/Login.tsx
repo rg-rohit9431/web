@@ -34,7 +34,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      
+
       let data = JSON.stringify({
         "phoneNumber": "91" + formData.phone,
         "otpLength": 6,
@@ -61,7 +61,9 @@ const Login = () => {
           console.log((response.data));
           toast.success('OTP sent successfully');
           formData.orderId = response.data.data.orderId;
-          navigate('otp', { state: { formData } });
+          setTimeout(() => {
+            navigate('otp', { state: { formData } });
+          }, 500)
         })
         .catch((error) => {
           console.log(error);
@@ -76,7 +78,7 @@ const Login = () => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
     handleLogin();
-    
+
   };
 
   return (

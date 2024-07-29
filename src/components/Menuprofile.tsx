@@ -70,7 +70,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
   return (
     <>
       <div
-        className={`w-full max-w-[400px] left-[50%] translate-x-[-50%] h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0  overflow-y-scroll transition duration-700 ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        className={`w-full max-w-[500px] left-[50%] translate-x-[-50%] h-[100vh] z-[1001] flex flex-col justify-end bg-black bg-opacity-50 fixed bottom-0 hideScroller  overflow-y-scroll transition duration-700 ease-in-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
 
         <div className="w-full h-fit flex items-center justify-center ">
           <div className="w-fit p-[1rem] rounded-full  bg-black mb-[1rem]">
@@ -84,7 +84,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
 
         <div className='w-full h-[70vh] bg-[#E9E9EA] py-[1rem] overflow-y-scroll hideScroller rounded-t-[6px]'>
           {/* image */}
-          <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px]'>
+          <div className='w-[95%] bg-white mx-auto p-[1rem]  rounded-[8px] '>
             <Swiper
               spaceBetween={30}
               centeredSlides={true}
@@ -102,9 +102,9 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
               {
                 modalData?.image.map((image, index) => (
                   <SwiperSlide key={index}>
-                    <div className='w-full h-full flex items-center justify-center'>
-                      <img src={image} alt="image" className='w-full max-w-[400px] aspect-auto object-contain rounded-[10px]' />
-                    </div>
+                    {/* <div className='w-full h-[320px] flex items-center justify-center'> */}
+                    <img src={image} alt="image" className='w-full h-[220px] object-cover rounded-[10px]' />
+                    {/* </div> */}
                   </SwiperSlide>
                 ))
               }
@@ -144,10 +144,10 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
 
             <div className='w-full  mt-[1rem]'>
               <p className=' font-[600]  overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{modalData?.name}</p>
-              <p className=' font-[600] overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>{modalData?.serves}</p>
+              <p className=' font-[600] overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>Serve for {modalData?.serves}</p>
               <div className='w-full flex items-center justify-between'>
                 <p className=' font-[400] font-inter text-[1.1rem] leading-[30px]'>😍
-                  <span className='text-[#000000A8]'>{modalData?.likes} customer love this</span></p>
+                  <span className='text-[#000000A8]'> {modalData?.likes} customer love this</span></p>
                 <p className=' font-[400] font-inter text-[1.1rem] leading-[27px] bg-[#FFD600] px-[1rem] py-[.5rem] rounded-md'>₹{modalData?.price}</p>
               </div>
 
@@ -166,7 +166,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
 
           {/* addone */}
           {
-            modalData?.addone?.length &&
+            modalData?.addone?.length != null && modalData?.addone.length > 0 &&
             <div className='w-[95%] mt-[1rem] bg-white mx-auto p-[1rem]  rounded-[8px] mb-[1rem]'>
               <p className=' font-[500] font-inter text-[18px] leading-[30px] mb-[.5rem]'>Add Ons</p>
               {

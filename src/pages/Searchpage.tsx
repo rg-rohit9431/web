@@ -106,12 +106,12 @@ const Searchpage: React.FC<SearchBarProps> = () => {
                                         {
                                             menu[0]?.image[0] && menu[1]?.image[0] && menu[2]?.image[0] &&
                                             <div className='w-full h-fit flex gap-[.5rem] justify-between items-center px-[1rem] mt-[1rem]'>
-                                                <div className='w-[50%] h-fit flex flex-col gap-[.5rem] items-center justify-center'>
+                                                <div className='w-[50%] h-fit flex flex-col gap-[.5rem] items-center justify-center '>
 
                                                     <div onClick={() => {
                                                         setModalData(menu[0]);
                                                         setMenuOpen(true);
-                                                    }} className='w-full h-fit relative '>
+                                                    }} className='w-full h-fit relative  '>
                                                         <img src={menu[0]?.image[0]} alt="image1" className='w-full aspect-square object-cover rounded-[8px] h-full' />
                                                         <div className='w-full absolute bottom-0 bg-[#0000008A] flex items-center gap-[.5rem] px-[.5rem] rounded-[8px]'>
                                                             <div className='flex items-center justify-center border-[1px] border-white p-[.3rem] rounded-[8px]'>

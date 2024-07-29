@@ -10,8 +10,8 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
 
     return (
         <>
-            <div className="w-[330px] min-w-[240px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
-                <div className='w-full h-fit flex justify-between'>
+            <div className="w-[330px] min-w-[280px] h-fit border-[.5px] border-[#00000080] rounded-[8px]">
+                <div className='w-full h-[30px] flex justify-between'>
                     <div className="p-[.5rem] rounded-md flex items-center justify-start w-fit h-fit bg-white border-2 relative top-[1rem] left-[1rem]">
                         <div
                             className={
@@ -37,7 +37,7 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
                     <div className='w-[65%] h-fit '>
                         <p className=' font-[600] h-[30px] overflow-hidden text-nowrap font-inter text-[18px] leading-[30px] text-ellipsis'>{item?.name}</p>
                         <p className=' font-[600] font-inter text-[17px] leading-[30px] text-ellipsis text-[#0F172A]'>₹ {item?.price}</p>
-                        <p className=' font-[400] h-[50px] overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>
+                        <p className=' font-[400]  overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>
                             {
                                 item?.description.length < 60 ? item?.description :
                                     item?.description.slice(0, 60) + "..."
@@ -45,7 +45,7 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
 
                         </p>
                     </div>
-                    <img src={item?.image[0]} alt="image" className='w-[30%] aspect-auto object-contain' />
+                    <img src={item?.image[0]} alt="image" className='h-[80px] w-[80px] object-cover  rounded-[5px]' />
                 </div>
 
                 <p className='border-[1.3px] border-[#00000033] w-[90%] mx-auto mt-[.5rem]'></p>
