@@ -1,5 +1,5 @@
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
 
@@ -105,12 +105,13 @@ interface Filters {
 
 const MainPage = () => {
     const { id } = useParams<{ id: string }>();
+    const hasCheckedVisitorData = useRef(false);
+
     //redux
     const dispatch = useAppDispatch()
     const { data, loading, error } = useAppSelector((state) => state.restaurant)
     const mostRecommand = useAppSelector((state) => state.mostRecommand)
     const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
-    // console.log("favoriteMenu ", favoriteMenu);
 
     const userData = localStorage.getItem("user");
     const user = userData ? JSON.parse(userData) : null;
@@ -136,20 +137,42 @@ const MainPage = () => {
 
 
     useEffect(() => {
+        // if (id) {
+        //     dispatch(fetchRestaurantDetails({ id }));
+        // }
 
-        if (!user?.birthday || !user?.anniversary) {
-            setBirthdayOpen(true);
+        // const currentMeal = getCurrentMeal();
+        // setMeal(currentMeal);
+
+
+        // checkAndUpdateVisitorData();
+
+        // if (!user?.birthday || !user?.anniversary) {
+        //     setBirthdayOpen(true);
+        // }
+
+        if (!hasCheckedVisitorData.current) {
+            if (id) {
+                dispatch(fetchRestaurantDetails({ id }));
+            }
+
+            const currentMeal = getCurrentMeal();
+            setMeal(currentMeal);
+
+            const userString = localStorage.getItem("user");
+            if (userString) {
+                const user = JSON.parse(userString);
+                const userId = user?._id;
+                checkAndUpdateVisitorData();
+            }
+
+            if (!user?.birthday || !user?.anniversary) {
+                setBirthdayOpen(true);
+            }
+
+            hasCheckedVisitorData.current = true;
         }
 
-        if (id) {
-            dispatch(fetchRestaurantDetails({ id }));
-        }
-
-        //get update meal as breakfast, lunch and dinner and more...
-        const currentMeal = getCurrentMeal();
-        setMeal(currentMeal);
-
-        checkAndUpdateVisitorData();
     }, []);
 
     // console.log(data);
@@ -169,8 +192,11 @@ const MainPage = () => {
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
+    // const debouncedCheckAndUpdateVisitorData = debounce(() => {
+    //     checkAndUpdateVisitorData();
+    // }, 500);
 
-    const checkAndUpdateVisitorData = () => {
+    const checkAndUpdateVisitorData = async() => {
         const storedValue = localStorage.getItem("snackBae_code");
         let isValueStored = storedValue ? JSON.parse(storedValue) : null;
         const now = new Date().getTime();
@@ -195,13 +221,14 @@ const MainPage = () => {
                     data: ''
                 };
 
-                axios.request(config)
+                await axios.request(config)
                     .then(response => {
                         console.log("user found", response.data);
                         const item = {
                             value: "for visitors data",
                             timestamp: new Date().getTime()
                         };
+
                         const currentSnackBaeCode = localStorage.getItem("snackBae_code");
 
                         // Only set the new value if it is different
@@ -215,7 +242,6 @@ const MainPage = () => {
             }
         }
     };
-
 
     const [filters, setFilters] = useState<Filters>({
         veg: false,
@@ -272,7 +298,6 @@ const MainPage = () => {
     const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
     // console.log(filteredData);
 
-
     const getCurrentMeal = (): string => {
         const currentTime = new Date();
         const currentHour = currentTime.getHours();
@@ -289,7 +314,6 @@ const MainPage = () => {
             return 'Late Night Snack';
         }
     };
-
 
     if (loading) return <Loader />
     if (error) return <div className='w-full h-[100vh] flex items-center justify-center'>Error</div>
