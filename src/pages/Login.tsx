@@ -24,7 +24,7 @@ interface FormData {
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({ name: '', gender: '', phone: '', orderId: '' });
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
@@ -63,6 +63,7 @@ const Login = () => {
           toast.success('OTP sent successfully');
           formData.orderId = response.data.data.orderId;
           setTimeout(() => {
+            setLoading(false);
             navigate('otp', { state: { formData } });
           }, 500)
         })
@@ -81,7 +82,7 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data Submitted:', formData);
-
+    setLoading(true);
     handleLogin();
 
   };
@@ -158,7 +159,9 @@ const Login = () => {
           type="submit"
           className='w-[90%] h-[54px] mx-auto bg-[#FFD600] my-[1rem] rounded-md font-Roboto font-[500] leading-[30px] text-[20px] '
         >
-          Continue
+          {
+            loading ? 'Loading...' : 'Continue'
+          }
         </button>
       </form>
     </>

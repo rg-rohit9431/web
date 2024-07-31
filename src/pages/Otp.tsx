@@ -27,6 +27,7 @@ const Otp: React.FC = () => {
     const [seconds, setSeconds] = useState<number>(60);
     const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const startTimer = useCallback(() => {
         timerRef.current = setInterval(() => {
@@ -68,7 +69,7 @@ const Otp: React.FC = () => {
 
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
-        const pastedData = e.clipboardData.getData('number').slice(0, 6);
+        const pastedData = e.clipboardData.getData('text').slice(0, 6);
         if (/^\d{6}$/.test(pastedData)) {
             setOtp(pastedData.split(''));
             inputsRef.current[5]?.focus();
@@ -144,6 +145,7 @@ const Otp: React.FC = () => {
                                     addUser();
                                 }
                                 setTimeout(() => {
+                                    setLoading(false);
                                     navigate('/restaurant/' + newId)
                                 }, 1000)
                             })
@@ -172,6 +174,7 @@ const Otp: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         otpVerify();
 
     };
@@ -238,7 +241,7 @@ const Otp: React.FC = () => {
                         {otp.map((digit, index) => (
                             <input
                                 key={index}
-                                type="number"
+                                type="text"
                                 maxLength={1}
                                 value={digit}
                                 onChange={(e) => handleChange(e, index)}
@@ -258,7 +261,11 @@ const Otp: React.FC = () => {
                     <button
                         type="submit"
                         className='w-full h-[54px] mx-auto bg-[#FFD600] my-[1rem] rounded-md font-Roboto font-[500] leading-[30px] text-[20px]'
-                    >Continue</button>
+                    >
+                        {
+                            loading ? 'Loading...' : 'Continue'
+                        }
+                    </button>
                 </form>
             </div>
         </>

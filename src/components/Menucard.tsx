@@ -42,7 +42,7 @@ const Menucard = ({ item, isFavorite }: { item: MenuItem; isFavorite: boolean })
                         <p className=' font-[400]  overflow-hidden font-inter text-[12px] leading-[19.36px] text-ellipsis text-[#64748B]'>
                             {
                                 item?.description.length < 60 ? item?.description :
-                                    item?.description.slice(0, 60) + "..."
+                                    item?.description.slice(0, 50) + "..."
                             }
 
                         </p>

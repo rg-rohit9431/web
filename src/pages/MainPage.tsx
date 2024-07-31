@@ -1,5 +1,5 @@
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { useEffect, useState,useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
 
@@ -81,6 +81,7 @@ export interface Category {
     name: string;
     subcategory: Subcategory[];
     __v: number;
+    active: boolean;
 }
 
 
@@ -125,6 +126,7 @@ const MainPage = () => {
     const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
     const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
     const [showCategory, setShowCategory] = useState<boolean>(false);
+    const [welcome, setWelcome] = useState<boolean>(true && localStorage.getItem("welcome")!== "false");
     const [modalData, setModalData] = useState<MenuItem | null>(null);
     const [meal, setMeal] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -161,8 +163,8 @@ const MainPage = () => {
 
             const userString = localStorage.getItem("user");
             if (userString) {
-                const user = JSON.parse(userString);
-                const userId = user?._id;
+                // const user = JSON.parse(userString);
+                // const userId = user?._id;
                 checkAndUpdateVisitorData();
             }
 
@@ -175,7 +177,7 @@ const MainPage = () => {
 
     }, []);
 
-    // console.log(data);
+    console.log(data);
 
     useEffect(() => {
 
@@ -196,7 +198,7 @@ const MainPage = () => {
     //     checkAndUpdateVisitorData();
     // }, 500);
 
-    const checkAndUpdateVisitorData = async() => {
+    const checkAndUpdateVisitorData = async () => {
         const storedValue = localStorage.getItem("snackBae_code");
         let isValueStored = storedValue ? JSON.parse(storedValue) : null;
         const now = new Date().getTime();
@@ -320,6 +322,21 @@ const MainPage = () => {
     else
         return (
             <>
+                {
+                    welcome &&
+                    <div className='flex justify-between items-center px-[1rem] py-[.5rem] text-[#004AAD] '>
+                        <p className='text-[1rem] font-Exo font-[500]'>Hello
+                            <span className='text-black'> {data?.additionalDetails?.city}</span>
+                            <span> {data?.resName?.split(' ').length > 2 ? data?.resName?.split(' ')[0] : data?.resName} </span>
+                            welcome you!! </p>
+                        <RxCross2
+                            onClick={() => {
+                                setWelcome(false);
+                                localStorage.setItem('welcome', 'false');
+                            }}
+                            className='text-[1.5rem] text-[#004AAD] cursor-pointer border-2 rounded-full  border-[#004AAD] p-[.2rem]' />
+                    </div>
+                }
                 <div className="w-full min-h-[200px] h-fit bg-[#FFD628] rounded-b-[30px]">
                     {/* section1 */}
                     <div className='w-full h-fit flex justify-between items-center px-[1rem] py-[1rem] relative'>
@@ -371,7 +388,7 @@ const MainPage = () => {
                     {/* section2 */}
                     <div className='w-[90%] h-fit mx-auto rounded-[20px] bg-[#FFFFFF] flex flex-wrap gap-[.5rem] justify-between items-center px-[1rem] py-[.5rem] shadow-lg'>
                         <div className='h-full w-fit flex items-center gap-[.5rem]'>
-                            <img src={data?.additionalDetails?.image} alt="logo" className='h-[60px] aspect-auto rounded-full' />
+                            <img src={data?.additionalDetails?.image} alt="logo" className='h-[60px] aspect-auto rounded-full border-[.5px]' />
                             <div className='w-fit flex flex-col gap-[.5rem]'>
                                 <p className=' font-[600] font-inter text-[24px] leading-[23px] text-wrap'>
                                     {data?.resName?.split(' ').length > 2 ? data?.resName?.split(' ')[0] : data?.resName}</p>
@@ -456,7 +473,7 @@ const MainPage = () => {
                                     showCategory &&
                                     <div className='absolute top-[3rem] left-0 px-[1rem] bg-white max-h-[200px] overflow-y-scroll rounded-[8px] hideScroller   z-[100] border-[1px] border-[#00000099] text-nowrap w-fit'>
                                         {
-                                            data?.category?.map((item: Category) => (
+                                            data?.category?.filter((category: Category) => category?.active == true).map((item: Category) => (
                                                 <p onClick={() => {
                                                     setSelectedCategory(item.name);
                                                 }} key={item?._id} className=' font-[500] font-inter text-[18px] leading-[21.78px] text-[#101828] py-[.5rem] text-nowrap'>
