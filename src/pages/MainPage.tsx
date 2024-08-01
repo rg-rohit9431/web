@@ -126,7 +126,7 @@ const MainPage = () => {
     const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
     const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
     const [showCategory, setShowCategory] = useState<boolean>(false);
-    const [welcome, setWelcome] = useState<boolean>(true && localStorage.getItem("welcome")!== "false");
+    const [welcome, setWelcome] = useState<boolean>(true);
     const [modalData, setModalData] = useState<MenuItem | null>(null);
     const [meal, setMeal] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -325,14 +325,11 @@ const MainPage = () => {
                 {
                     welcome &&
                     <div className='flex justify-between items-center px-[1rem] py-[.5rem] text-[#004AAD] '>
-                        <p className='text-[1rem] font-Exo font-[500]'>Hello
-                            <span className='text-black'> {data?.additionalDetails?.city}</span>
-                            <span> {data?.resName?.split(' ').length > 2 ? data?.resName?.split(' ')[0] : data?.resName} </span>
-                            welcome you!! </p>
+                        <p className='text-[1rem] font-Exo font-[500]'>
+                            Welcome to <span className='text-black' > {data?.resName?.split(' ').length > 2 ? data?.resName?.split(' ')[0] : data?.resName} </span>– Your Table is Ready!</p>
                         <RxCross2
                             onClick={() => {
                                 setWelcome(false);
-                                localStorage.setItem('welcome', 'false');
                             }}
                             className='text-[1.5rem] text-[#004AAD] cursor-pointer border-2 rounded-full  border-[#004AAD] p-[.2rem]' />
                     </div>
