@@ -2,6 +2,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
+import toast from 'react-hot-toast';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
@@ -38,7 +39,6 @@ import Menuprofile from '../components/Menuprofile';
 import Shareprofile from '../components/Shareprofile';
 import Birthdayprofile from '../components/Birthdayprofile';
 import Loader from '../components/Loader';
-// import { baseUrl } from '../main';
 
 interface Addone {
     _id: string;
@@ -105,7 +105,7 @@ interface Filters {
 
 
 const MainPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id, tableNo } = useParams<{ id: string, tableNo: string }>();
     const hasCheckedVisitorData = useRef(false);
 
     //redux
@@ -117,6 +117,7 @@ const MainPage = () => {
     const userData = localStorage.getItem("user");
     const user = userData ? JSON.parse(userData) : null;
     // console.log(user)
+    // console.log(tableNo);
 
     const navigate = useNavigate();
     const [isFeedbackOpen, setFeedbackOpen] = useState<boolean>(false);
@@ -139,19 +140,14 @@ const MainPage = () => {
 
 
     useEffect(() => {
-        // if (id) {
-        //     dispatch(fetchRestaurantDetails({ id }));
-        // }
 
-        // const currentMeal = getCurrentMeal();
-        // setMeal(currentMeal);
+        const scanQrExecuted = sessionStorage.getItem('scanQrExecuted');
 
-
-        // checkAndUpdateVisitorData();
-
-        // if (!user?.birthday || !user?.anniversary) {
-        //     setBirthdayOpen(true);
-        // }
+        if (!scanQrExecuted) {
+            scanQr().then(() => {
+                sessionStorage.setItem('scanQrExecuted', 'true');
+            });
+        }
 
         if (!hasCheckedVisitorData.current) {
             if (id) {
@@ -197,6 +193,30 @@ const MainPage = () => {
     // const debouncedCheckAndUpdateVisitorData = debounce(() => {
     //     checkAndUpdateVisitorData();
     // }, 500);
+
+    const scanQr = async () => {
+
+        try {
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `${baseUrl}/api/scan/${id}/${tableNo}`,
+                headers: {}
+            };
+
+            axios.request(config)
+                .then((response) => {
+                    console.log(JSON.stringify(response.data.scans));
+                    toast.success("Table scan successfully");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     const checkAndUpdateVisitorData = async () => {
         const storedValue = localStorage.getItem("snackBae_code");

@@ -18,16 +18,16 @@ const App: React.FC = () => {
     <>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/restaurant/:id/login" element={<Login />} />
-        <Route path="/restaurant/:id/login/otp" element={<Otp />} />
+        <Route path="/restaurant/:id/:tableNo/login" element={<Login />} />
+        <Route path="/restaurant/:id/:tableNo/login/otp" element={<Otp />} />
 
         {/* Main Pages and Search Routes */}
         <Route
-          path="/restaurant/:id"
+          path="/restaurant/:id/:tableNo"
           element={<ProtectedRoute element={MainPage} />}
         />
         <Route
-          path="/restaurant/:id/search"
+          path="/restaurant/:id/:tableNo/search"
           element={<ProtectedRoute element={Searchpage}  />}
         />
 

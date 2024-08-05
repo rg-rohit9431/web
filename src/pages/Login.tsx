@@ -63,12 +63,12 @@ const Login = () => {
           toast.success('OTP sent successfully');
           formData.orderId = response.data.data.orderId;
           setTimeout(() => {
-            setLoading(false);
             navigate('otp', { state: { formData } });
           }, 500)
         })
         .catch((error) => {
           console.log(error);
+          toast.error(error.message);
         });
 
 
@@ -84,6 +84,10 @@ const Login = () => {
     console.log('Form Data Submitted:', formData);
     setLoading(true);
     handleLogin();
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
 
   };
 
