@@ -19,7 +19,7 @@ interface LocationState {
 const Otp: React.FC = () => {
     const location = useLocation();
     const { formData } = location.state as LocationState || {};
-    const { id: newId } = useParams<{ id: string }>();
+    const { id: newId ,tableNo } = useParams<{ id: string , tableNo: string }>();
     const navigate = useNavigate();
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
@@ -146,7 +146,7 @@ const Otp: React.FC = () => {
                                 }
                                 setTimeout(() => {
                                     setLoading(false);
-                                    navigate('/restaurant/' + newId)
+                                    navigate('/restaurant/' + newId + '/' + tableNo);
                                 }, 1000)
                             })
                             .catch((error) => {

@@ -2,7 +2,6 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
-import toast from 'react-hot-toast';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
@@ -207,7 +206,7 @@ const MainPage = () => {
             axios.request(config)
                 .then((response) => {
                     console.log(JSON.stringify(response.data.scans));
-                    toast.success("Table scan successfully");
+                    // toast.success("Table scan successfully");
                 })
                 .catch((error) => {
                     console.log(error);
