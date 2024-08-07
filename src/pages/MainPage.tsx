@@ -244,7 +244,9 @@ const MainPage = () => {
                     maxBodyLength: Infinity,
                     // url: `http://localhost:4000/api/updateCustomerInfo/${userId}/${id}`,
                     url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
-                    headers: {},
+                   headers: {
+                        'Content-Type': 'application/json',
+                    },
                     data: data,
                 };
 
