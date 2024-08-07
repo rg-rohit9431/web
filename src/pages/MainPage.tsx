@@ -145,8 +145,9 @@ const MainPage = () => {
 
         if (!scanQrExecuted) {
             scanQr().then(() => {
-                sessionStorage.setItem('scanQrExecuted', 'true');
+                sessionStorage.setItem('scanQrExecuted', 'true');         
             });
+            checkUserScan();
         }
 
         if (!hasCheckedVisitorData.current) {
@@ -213,8 +214,43 @@ const MainPage = () => {
         }
     };
 
+    const checkUserScan = async () => {
+
+        try {
+            const userExecuted = localStorage.getItem("userExecuted");
+            let value: string = "";
+            if (!userExecuted) {
+                value = "newCustomer";
+                localStorage.setItem('userExecuted', 'true'); 
+            }
+            else {
+                value = "totalCustomer";
+            }
+
+            let config = {
+                method: 'put',
+                maxBodyLength: Infinity,
+                url: `http://localhost:4000/api/scan/${id}/${tableNo}/${value}`,
+                headers: {}
+            };
+
+            axios.request(config)
+                .then((response) => {
+                    console.log(JSON.stringify(response.data));
+                    toast.success("user scan successfully");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     const checkAndUpdateVisitorData = async () => {
-            
+
         // const storedValue = localStorage.getItem("snackBae_code");
         // let isValueStored = storedValue ? JSON.parse(storedValue) : null;
         // const now = new Date().getTime();
@@ -227,50 +263,50 @@ const MainPage = () => {
 
         // if (!isValueStored) {
 
-            const userString = localStorage.getItem("user");
-            if (userString) {
-                const user = JSON.parse(userString);
-                const userId = user?._id;
-                const currentDate = new Date();
-                console.log("current date : ",currentDate);
-                const data1 = {
-                    "date": currentDate
-                };
-                console.log("data1 : ",data1);
-                const data = JSON.stringify(data1);
-                console.log(data);
-                const config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    // url: `http://localhost:4000/api/updateCustomerInfo/${userId}/${id}`,
-                    url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
-                   headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    data: data,
-                };
+        const userString = localStorage.getItem("user");
+        if (userString) {
+            const user = JSON.parse(userString);
+            const userId = user?._id;
+            const currentDate = new Date();
+            console.log("current date : ", currentDate);
+            const data1 = {
+                "date": currentDate
+            };
+            console.log("data1 : ", data1);
+            const data = JSON.stringify(data1);
+            console.log(data);
+            const config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                // url: `http://localhost:4000/api/updateCustomerInfo/${userId}/${id}`,
+                url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: data,
+            };
 
-                await axios.request(config)
-                    .then(response => {
-                        console.log("user found", response.data);
+            await axios.request(config)
+                .then(response => {
+                    console.log("user found", response.data);
 
-                        // const item = {
-                        //     value: "for visitors data",
-                        //     timestamp: new Date().getTime()
-                        // };
+                    // const item = {
+                    //     value: "for visitors data",
+                    //     timestamp: new Date().getTime()
+                    // };
 
-                        // const currentSnackBaeCode = localStorage.getItem("snackBae_code");
+                    // const currentSnackBaeCode = localStorage.getItem("snackBae_code");
 
-                        // Only set the new value if it is different
-                        // if (!currentSnackBaeCode || currentSnackBaeCode !== JSON.stringify(item)) {
-                        //     localStorage.setItem("snackBae_code", JSON.stringify(item));
-                        // }
+                    // Only set the new value if it is different
+                    // if (!currentSnackBaeCode || currentSnackBaeCode !== JSON.stringify(item)) {
+                    //     localStorage.setItem("snackBae_code", JSON.stringify(item));
+                    // }
 
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
         // }
     };
 
