@@ -233,6 +233,8 @@ const MainPage = () => {
             if (!userExecuted) {
                 value = "newCustomer";
                 userValue.detail = value;
+                userValue.tableNo = tableNo || "";
+                userValue.resId = id || "";
                 localStorage.setItem('userExecuted', JSON.stringify(userValue));
             }
             else {
