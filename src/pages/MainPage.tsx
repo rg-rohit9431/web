@@ -2,6 +2,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
+import toast from 'react-hot-toast';
 
 //redux
 import { useAppDispatch, useAppSelector } from '../redux/hook';
@@ -189,10 +190,6 @@ const MainPage = () => {
 
     }, [isFeedbackOpen, isShareOpen, isBirthdayOpen, isMenuOpen]);
 
-    // const debouncedCheckAndUpdateVisitorData = debounce(() => {
-    //     checkAndUpdateVisitorData();
-    // }, 500);
-
     const scanQr = async () => {
 
         try {
@@ -206,7 +203,7 @@ const MainPage = () => {
             axios.request(config)
                 .then((response) => {
                     console.log(JSON.stringify(response.data.scans));
-                    // toast.success("Table scan successfully");
+                    toast.success("Table scan successfully");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -216,52 +213,63 @@ const MainPage = () => {
         }
     };
 
-
     const checkAndUpdateVisitorData = async () => {
-        const storedValue = localStorage.getItem("snackBae_code");
-        let isValueStored = storedValue ? JSON.parse(storedValue) : null;
-        const now = new Date().getTime();
-        const twelveHours = 12 * 60 * 60 * 1000;
+            
+        // const storedValue = localStorage.getItem("snackBae_code");
+        // let isValueStored = storedValue ? JSON.parse(storedValue) : null;
+        // const now = new Date().getTime();
+        // const twelveHours = 12 * 60 * 60 * 1000;
 
-        if (isValueStored && (now - isValueStored.timestamp > twelveHours)) {
-            localStorage.removeItem("snackBae_code");
-            isValueStored = null;
-        }
+        // if (isValueStored && (now - isValueStored.timestamp > twelveHours)) {
+        //     localStorage.removeItem("snackBae_code");
+        //     isValueStored = null;
+        // }
 
-        if (!isValueStored) {
+        // if (!isValueStored) {
+
             const userString = localStorage.getItem("user");
             if (userString) {
                 const user = JSON.parse(userString);
                 const userId = user?._id;
-
+                const currentDate = new Date();
+                console.log("current date : ",currentDate);
+                const data1 = {
+                    "date": currentDate
+                };
+                console.log("data1 : ",data1);
+                const data = JSON.stringify(data1);
+                console.log(data);
                 const config = {
                     method: 'post',
                     maxBodyLength: Infinity,
+                    // url: `http://localhost:4000/api/updateCustomerInfo/${userId}/${id}`,
                     url: `${baseUrl}/api/updateCustomerInfo/${userId}/${id}`,
                     headers: {},
-                    data: ''
+                    data: data,
                 };
 
                 await axios.request(config)
                     .then(response => {
                         console.log("user found", response.data);
-                        const item = {
-                            value: "for visitors data",
-                            timestamp: new Date().getTime()
-                        };
 
-                        const currentSnackBaeCode = localStorage.getItem("snackBae_code");
+                        // const item = {
+                        //     value: "for visitors data",
+                        //     timestamp: new Date().getTime()
+                        // };
+
+                        // const currentSnackBaeCode = localStorage.getItem("snackBae_code");
 
                         // Only set the new value if it is different
-                        if (!currentSnackBaeCode || currentSnackBaeCode !== JSON.stringify(item)) {
-                            localStorage.setItem("snackBae_code", JSON.stringify(item));
-                        }
+                        // if (!currentSnackBaeCode || currentSnackBaeCode !== JSON.stringify(item)) {
+                        //     localStorage.setItem("snackBae_code", JSON.stringify(item));
+                        // }
+
                     })
                     .catch(error => {
                         console.error(error);
                     });
             }
-        }
+        // }
     };
 
     const [filters, setFilters] = useState<Filters>({
