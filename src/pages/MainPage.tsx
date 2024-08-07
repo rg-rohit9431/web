@@ -240,6 +240,9 @@ const MainPage = () => {
 
                     if (userValue.tableNo === userValue.tableNo) {
                         value = "totalCustomer";
+                        userValue.detail = value;
+                        userValue.tableNo = tableNo || "";
+                        userValue.resId = id || "";
                         localStorage.setItem('userExecuted', JSON.stringify(userValue));
                     }
                     else {
