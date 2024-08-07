@@ -84,6 +84,12 @@ export interface Category {
     active: boolean;
 }
 
+export interface UserDetail {
+    detail: string | null;
+    resId: string;
+    tableNo: string ;
+}
+
 
 // interface Restaurant {
 //     _id: string;
@@ -145,7 +151,7 @@ const MainPage = () => {
 
         if (!scanQrExecuted) {
             scanQr().then(() => {
-                sessionStorage.setItem('scanQrExecuted', 'true');         
+                sessionStorage.setItem('scanQrExecuted', 'true');
             });
             checkUserScan();
         }
@@ -215,22 +221,48 @@ const MainPage = () => {
     };
 
     const checkUserScan = async () => {
-
         try {
-            const userExecuted = localStorage.getItem("userExecuted");
             let value: string = "";
+            
+            let userValue: UserDetail = {
+                detail: value || "",
+                resId: id || "",
+                tableNo: tableNo || "",
+            }
+            const userExecuted = localStorage.getItem("userExecuted");
             if (!userExecuted) {
                 value = "newCustomer";
-                localStorage.setItem('userExecuted', 'true'); 
+                userValue.detail = value;
+                localStorage.setItem('userExecuted', JSON.stringify(userValue));
             }
             else {
-                value = "totalCustomer";
+                if (userValue.resId === id) {
+
+                    if (userValue.tableNo === userValue.tableNo) {
+                        value = "totalCustomer";
+                        localStorage.setItem('userExecuted', JSON.stringify(userValue));
+                    }
+                    else {
+                        value = "newCustomer";
+                        userValue.detail = value;
+                        userValue.resId = id;
+                        userValue.tableNo = tableNo || "";
+                        localStorage.setItem('userExecuted', JSON.stringify(userValue));
+                    }
+                }
+                else {
+                    value = "newCustomer";
+                    userValue.tableNo = tableNo || "";
+                    userValue.detail = value;
+                    userValue.resId = id || "";
+                    localStorage.setItem('userExecuted', JSON.stringify(userValue));
+                }
             }
 
             let config = {
                 method: 'put',
                 maxBodyLength: Infinity,
-                url: `http://localhost:4000/api/scan/${id}/${tableNo}/${value}`,
+                url: `${baseUrl}/api/scan/${id}/${tableNo}/${value}`,
                 headers: {}
             };
 
