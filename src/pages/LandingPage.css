@@ -1,0 +1,31 @@
+.scrollleftanimation{
+    animation: animateleft 40s linear infinite;
+}
+@keyframes animateleft{
+    0%{
+        transform: translateX(0);
+    }
+    100%{
+        transform: translateX(-50%);
+    }
+}
+.scrollrightanimation{
+    animation: animateright 40s linear infinite;
+}
+@keyframes animateright{
+    0%{
+        transform: translateX(-50%);
+    }
+    100%{
+        transform: translateX(0%);
+    }
+}
+/* Add this to your CSS file */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* for Internet Explorer and Edge */
+  scrollbar-width: none;  /* for Firefox */
+}
