@@ -6,6 +6,7 @@ import mostRecommandslice from './slices/mostrecommandslice'
 import favoriteSlice from './slices/favoriteslice'
 import blogSlice from './slices/blogslice'
 import singleblogslice from './slices/singleblogslice'
+import allmenuslice from './slices/allmenuslice'
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     'favoriteMenu': favoriteSlice,
     'blog': blogSlice,
     'singleBlog': singleblogslice,
+    'allcategory' : allmenuslice,
   },
 })
 

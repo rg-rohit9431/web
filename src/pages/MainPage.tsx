@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { fetchRestaurantDetails } from '../redux/slices/restaurentslice';
 import { fetchMostRecommandItemsDetails } from '../redux/slices/mostrecommandslice';
 import { favoriteMenuDetails } from '../redux/slices/favoriteslice';
+import { fetchAllCategoryDetails } from '../redux/slices/allmenuslice';
 
 //image
 import Hand from '../assets/Hand.png';
@@ -87,7 +88,7 @@ export interface Category {
 export interface UserDetail {
     detail: string | null;
     resId: string;
-    tableNo: string ;
+    tableNo: string;
 }
 
 
@@ -116,9 +117,10 @@ const MainPage = () => {
 
     //redux
     const dispatch = useAppDispatch()
-    const { data, loading, error } = useAppSelector((state) => state.restaurant)
-    const mostRecommand = useAppSelector((state) => state.mostRecommand)
-    const favoriteMenu = useAppSelector((state) => state.favoriteMenu)
+    const { data, loading, error } = useAppSelector((state) => state.restaurant);
+    const mostRecommand = useAppSelector((state) => state.mostRecommand);
+    const favoriteMenu = useAppSelector((state) => state.favoriteMenu);
+    const allcategory = useAppSelector((state) => state.allcategory);
 
     const userData = localStorage.getItem("user");
     const user = userData ? JSON.parse(userData) : null;
@@ -153,7 +155,7 @@ const MainPage = () => {
             scanQr().then(() => {
                 sessionStorage.setItem('scanQrExecuted', 'true');
             });
-            checkUserScan();
+            // checkUserScan();
         }
 
         if (!hasCheckedVisitorData.current) {
@@ -180,7 +182,7 @@ const MainPage = () => {
 
     }, []);
 
-    console.log(data);
+    // console.log(data);
 
     useEffect(() => {
 
@@ -188,6 +190,7 @@ const MainPage = () => {
             const userId = user._id;
             dispatch(favoriteMenuDetails({ id, userId }));
             dispatch(fetchMostRecommandItemsDetails({ id }));
+            dispatch(fetchAllCategoryDetails({ id }));
         }
         if (isFeedbackOpen || isShareOpen || isBirthdayOpen || isMenuOpen) {
             document.body.style.overflow = 'hidden';
@@ -220,70 +223,70 @@ const MainPage = () => {
         }
     };
 
-    const checkUserScan = async () => {
-        try {
-            let value: string = "";
-            
-            let userValue: UserDetail = {
-                detail: value || "",
-                resId: id || "",
-                tableNo: tableNo || "",
-            }
-            const userExecuted = localStorage.getItem("userExecuted");
-            if (!userExecuted) {
-                value = "newCustomer";
-                userValue.detail = value;
-                userValue.tableNo = tableNo || "";
-                userValue.resId = id || "";
-                localStorage.setItem('userExecuted', JSON.stringify(userValue));
-            }
-            else {
-                if (userValue.resId === id) {
+    // const checkUserScan = async () => {
+    //     try {
+    //         let value: string = "";
 
-                    if (userValue.tableNo === userValue.tableNo) {
-                        value = "totalCustomer";
-                        userValue.detail = value;
-                        userValue.tableNo = tableNo || "";
-                        userValue.resId = id || "";
-                        localStorage.setItem('userExecuted', JSON.stringify(userValue));
-                    }
-                    else {
-                        value = "newCustomer";
-                        userValue.detail = value;
-                        userValue.resId = id;
-                        userValue.tableNo = tableNo || "";
-                        localStorage.setItem('userExecuted', JSON.stringify(userValue));
-                    }
-                }
-                else {
-                    value = "newCustomer";
-                    userValue.tableNo = tableNo || "";
-                    userValue.detail = value;
-                    userValue.resId = id || "";
-                    localStorage.setItem('userExecuted', JSON.stringify(userValue));
-                }
-            }
+    //         let userValue: UserDetail = {
+    //             detail: value || "",
+    //             resId: id || "",
+    //             tableNo: tableNo || "",
+    //         }
+    //         const userExecuted = localStorage.getItem("userExecuted");
+    //         if (!userExecuted) {
+    //             value = "newCustomer";
+    //             userValue.detail = value;
+    //             userValue.tableNo = tableNo || "";
+    //             userValue.resId = id || "";
+    //             localStorage.setItem('userExecuted', JSON.stringify(userValue));
+    //         }
+    //         else {
+    //             if (userValue.resId === id) {
 
-            let config = {
-                method: 'put',
-                maxBodyLength: Infinity,
-                url: `${baseUrl}/api/scan/${id}/${tableNo}/${value}`,
-                headers: {}
-            };
+    //                 if (userValue.tableNo === userValue.tableNo) {
+    //                     value = "totalCustomer";
+    //                     userValue.detail = value;
+    //                     userValue.tableNo = tableNo || "";
+    //                     userValue.resId = id || "";
+    //                     localStorage.setItem('userExecuted', JSON.stringify(userValue));
+    //                 }
+    //                 else {
+    //                     value = "newCustomer";
+    //                     userValue.detail = value;
+    //                     userValue.resId = id;
+    //                     userValue.tableNo = tableNo || "";
+    //                     localStorage.setItem('userExecuted', JSON.stringify(userValue));
+    //                 }
+    //             }
+    //             else {
+    //                 value = "newCustomer";
+    //                 userValue.tableNo = tableNo || "";
+    //                 userValue.detail = value;
+    //                 userValue.resId = id || "";
+    //                 localStorage.setItem('userExecuted', JSON.stringify(userValue));
+    //             }
+    //         }
 
-            axios.request(config)
-                .then((response) => {
-                    console.log(JSON.stringify(response.data));
-                    toast.success("user scan successfully");
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+    //         let config = {
+    //             method: 'put',
+    //             maxBodyLength: Infinity,
+    //             url: `${baseUrl}/api/scan/${id}/${tableNo}/${value}`,
+    //             headers: {}
+    //         };
 
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    //         axios.request(config)
+    //             .then((response) => {
+    //                 console.log(JSON.stringify(response.data));
+    //                 toast.success("user scan successfully");
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });
+
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
 
     const checkAndUpdateVisitorData = async () => {
@@ -311,7 +314,7 @@ const MainPage = () => {
             };
             console.log("data1 : ", data1);
             const data = JSON.stringify(data1);
-            console.log(data);
+            // console.log(data);
             const config = {
                 method: 'post',
                 maxBodyLength: Infinity,
@@ -399,8 +402,10 @@ const MainPage = () => {
         }
     };
 
-    const filteredData = data?.category?.filter((item: Category) => item?.name === selectedCategory)[0];
+    const filteredData = allcategory?.data?.category?.filter(
+        (item: Category) => item?.name === selectedCategory)[0];
     // console.log(filteredData);
+    // console.log(allcategory.data.category);
 
     const getCurrentMeal = (): string => {
         const currentTime = new Date();

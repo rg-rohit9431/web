@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
+import { consoleUrl } from "../main";
 
 //image
 import logo from '../assets/logo1.png';
@@ -16,8 +17,8 @@ import { getAllBlogs } from '../redux/slices/blogslice';
 const Navbar = () => {
 
     const navigate = useNavigate();
-    const dispatch = useAppDispatch()
-    const allBlogs = useAppSelector((state) => state.blog)
+    const dispatch = useAppDispatch();
+    const allBlogs = useAppSelector((state) => state.blog);
 
     //handle toggle for menu for small screen
     const [isToggled, setIsToggled] = useState(false);
@@ -98,7 +99,8 @@ const Navbar = () => {
                 <NavLink
                     onClick={handleLinkClick}
                     className="sm:ml-[2rem] bg-[#FFD628] px-[1.4rem] py-[.5rem] rounded-md font-[500] text-[1rem] leading-[1.15rem]"
-                    to="https://snackbaeuser-snackbaes-projects.vercel.app/"
+                    to={consoleUrl}
+                    target='_blank'
                 >
                     Get Started
                 </NavLink>

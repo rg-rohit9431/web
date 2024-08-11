@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../main';
 import { MenuItem } from '../pages/MainPage';
@@ -24,6 +24,7 @@ import blackstar from '../assets/blackstar.png';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+
 interface menuprofileProps {
   isMenuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,12 +34,14 @@ interface menuprofileProps {
 
 const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, modalData, isFavorite }) => {
   const [isFavoriteMenu, setFavoriteMenu] = useState<boolean>(isFavorite);
-  const resId = useParams().id;
+  const [handleFavoriteMenu, setHandleFavoriteMenu] = useState<boolean>(false);
+  const { id } = useParams<{ id: string }>();
+
 
   //user
   const userData = localStorage.getItem("user");
   const user = userData ? JSON.parse(userData) : null;
-  console.log(user)
+  console.log(user);
 
   const toggleFavoriteMenu = async () => {
     try {
@@ -46,7 +49,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${baseUrl}/api/favourites/${user._id}/${modalData?._id}/${resId}`,
+        url: `${baseUrl}/api/favourites/${user._id}/${modalData?._id}/${id}`,
         headers: {}
       };
 
@@ -54,6 +57,7 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
         .then((response) => {
           console.log(JSON.stringify(response.data));
           setFavoriteMenu(!isFavoriteMenu);
+          setHandleFavoriteMenu(!isFavoriteMenu);
           isFavoriteMenu ? toast.success('Menu removed from favourites') : toast.success('Menu added to favourites');
         })
         .catch((error) => {
@@ -65,7 +69,6 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
       console.log(error);
     }
   }
-
 
   return (
     <>
@@ -147,7 +150,16 @@ const Menuprofile: React.FC<menuprofileProps> = ({ isMenuOpen, setMenuOpen, moda
               <p className=' font-[600] overflow-hidden text-nowrap font-inter text-[1.1rem] leading-[30px] text-ellipsis'>Serve for {modalData?.serves}</p>
               <div className='w-full flex items-center justify-between'>
                 <p className=' font-[400] font-inter text-[1.1rem] leading-[30px]'>😍
-                  <span className='text-[#000000A8]'> {modalData?.likes} customer love this</span></p>
+                  <span className='text-[#000000A8]'>
+                    {`${isFavorite && modalData
+                      ? isFavoriteMenu
+                        ? modalData?.likes
+                        : modalData?.likes - 1
+                      : handleFavoriteMenu && modalData
+                        ? modalData?.likes + 1
+                        : modalData?.likes
+                      }`
+                    } customer love this</span></p>
                 <p className=' font-[400] font-inter text-[1.1rem] leading-[27px] bg-[#FFD600] px-[1rem] py-[.5rem] rounded-md'>₹{modalData?.price}</p>
               </div>
 

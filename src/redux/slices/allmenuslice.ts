@@ -1,4 +1,4 @@
-// fetch all menu for search page
+// fetch all menu for main page
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
@@ -17,11 +17,11 @@ const initialState: MenuState = {
   error: null
 }
 
-export const fetchAllMenuDetails = createAsyncThunk<any, { id: string }, { rejectValue: any }>(
+export const fetchAllCategoryDetails = createAsyncThunk<any, { id: string }, { rejectValue: any }>(
     'menu/fetchAllMenuDetails',
     async ({ id }, thunkAPI) => {
       try {
-        const response = await axios.get(`${baseUrl}/api/allmenu/${id}`)
+        const response = await axios.get(`${baseUrl}/api/menu/${id}`)
         // console.log(response.data)
         return response.data
       } catch (error: any) {
@@ -30,21 +30,21 @@ export const fetchAllMenuDetails = createAsyncThunk<any, { id: string }, { rejec
     }
   )
 
-export const menuSlice = createSlice({
+export const allmenuSlice = createSlice({
   name: 'menuSlice',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllMenuDetails.pending, (state) => {
+      .addCase(fetchAllCategoryDetails.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchAllMenuDetails.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(fetchAllCategoryDetails.fulfilled, (state, action: PayloadAction<any>) => {
         state.data = action.payload;
         state.loading = false;
         state.error = null;
       })
-      .addCase(fetchAllMenuDetails.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(fetchAllCategoryDetails.rejected, (state, action: PayloadAction<any>) => {
         state.data = null;
         state.loading = false;
         state.error = action.payload;
@@ -54,4 +54,4 @@ export const menuSlice = createSlice({
 
 
 
-export default menuSlice.reducer
+export default allmenuSlice.reducer
